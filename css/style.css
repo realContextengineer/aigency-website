@@ -609,9 +609,17 @@ a:hover, a:focus-visible {
   height: 100% !important;
 }
 
+/* Keep Arthur visible even while WebGL starts or if a visitor's browser
+   cannot initialise the talking avatar. The live canvas sits above this. */
+.ai-talk-arthur-avatar {
+  background: #101b28 url('/assets/arthur-ai-intern.png') 50% 16% / cover no-repeat;
+}
+
 /* The 2D portrait is a failure fallback only. Showing it during WebGL start-up
    makes two Arthurs appear briefly in the same medallion. */
 .ai-talk-arthur-avatar > img {
+  width: 100% !important;
+  height: 100% !important;
   opacity: 0;
 }
 

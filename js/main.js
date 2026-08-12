@@ -479,14 +479,9 @@
 
   const inlineArthurHeads = new WeakMap();
   const inlineArthurAvatarLoads = new WeakMap();
-  const localArthurRuntime = ['127.0.0.1', 'localhost', '::1'].includes(window.location.hostname);
 
   function mountInlineArthurAvatar(avatarHost) {
     if (!avatarHost) return Promise.resolve(null);
-    if (!localArthurRuntime) {
-      avatarHost.classList.add('is-avatar-unavailable');
-      return Promise.resolve(null);
-    }
     if (inlineArthurAvatarLoads.has(avatarHost)) return inlineArthurAvatarLoads.get(avatarHost);
     const load = (async function() {
       try {
@@ -499,7 +494,7 @@
           lightDirectColor: 0x8fcfc0, lightDirectIntensity: 16
         });
         await head.showAvatar({
-          // Local-only visual proof. This bundled demo asset is not for a public release.
+          // Demo avatar approved for the current public website iteration.
           url: '/vendor/talkinghead/avatars/avatarsdk.glb', body: 'M', avatarMood: 'neutral',
           baseline: { headRotateX: -0.04, eyeBlinkLeft: 0.05, eyeBlinkRight: 0.05 },
           retarget: { Neck: { z: -0.01, rx: -0.15 }, Neck1: { z: -0.01, rx: -0.15 }, Neck2: { z: -0.01, rx: -0.15 }, LeftShoulder: { rz: -0.3 }, RightShoulder: { rz: 0.3 }, scaleToEyesLevel: 1.0, origin: { y: -0.1 } }
@@ -511,7 +506,7 @@
         return head;
       } catch (error) {
         avatarHost.classList.add('is-avatar-unavailable');
-        console.warn('Arthur local avatar demo could not load.', error);
+        console.warn('Arthur avatar could not load.', error);
         return null;
       }
     })();
@@ -1056,10 +1051,6 @@
     async function loadLocalDemoAvatar() {
       if (demoAvatarStarted || !avatarHost) return;
       demoAvatarStarted = true;
-      if (!localArthurRuntime) {
-        avatarHost.classList.add('is-avatar-unavailable');
-        return;
-      }
       try {
         const module = await import('/vendor/talkinghead/modules/talkinghead.mjs');
         const head = new module.TalkingHead(avatarHost, {
@@ -1070,7 +1061,7 @@
           lightDirectColor: 0x8fcfc0, lightDirectIntensity: 16
         });
         await head.showAvatar({
-          // Local-only visual proof. This bundled demo asset is not for a public release.
+          // Demo avatar approved for the current public website iteration.
           url: '/vendor/talkinghead/avatars/avatarsdk.glb', body: 'M', avatarMood: 'neutral',
           baseline: { headRotateX: -0.04, eyeBlinkLeft: 0.05, eyeBlinkRight: 0.05 },
           retarget: { Neck: { z: -0.01, rx: -0.15 }, Neck1: { z: -0.01, rx: -0.15 }, Neck2: { z: -0.01, rx: -0.15 }, LeftShoulder: { rz: -0.3 }, RightShoulder: { rz: 0.3 }, scaleToEyesLevel: 1.0, origin: { y: -0.1 } }
@@ -1084,7 +1075,7 @@
         avatarHost.classList.add('is-avatar-ready');
       } catch (error) {
         avatarHost.classList.add('is-avatar-unavailable');
-        console.warn('Arthur local avatar demo could not load.', error);
+        console.warn('Arthur avatar could not load.', error);
       }
     }
 
