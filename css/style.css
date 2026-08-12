@@ -5064,6 +5064,8 @@ a:hover, a:focus-visible {
 }
 
 .insight-audio-button,
+.insight-download-button,
+.insight-page-button,
 .insight-chat-send {
   border: 1px solid rgba(159, 198, 170, 0.48);
   border-radius: 999px;
@@ -5077,6 +5079,10 @@ a:hover, a:focus-visible {
 
 .insight-audio-button:hover,
 .insight-audio-button:focus-visible,
+.insight-download-button:hover,
+.insight-download-button:focus-visible,
+.insight-page-button:hover:not(:disabled),
+.insight-page-button:focus-visible,
 .insight-chat-send:hover,
 .insight-chat-send:focus-visible {
   background: rgba(53, 112, 80, 0.72);
@@ -5087,6 +5093,17 @@ a:hover, a:focus-visible {
 .insight-audio-button:disabled {
   cursor: not-allowed;
   opacity: 0.55;
+}
+
+.insight-download-button {
+  border: 1px solid rgba(222, 175, 123, 0.52);
+  border-radius: 999px;
+  background: rgba(79, 47, 45, 0.52);
+  color: var(--color-silver);
+  cursor: pointer;
+  font: 600 0.76rem var(--font-mono);
+  letter-spacing: 0.03em;
+  padding: 0.65rem 0.9rem;
 }
 
 .insight-audio-bar p {
@@ -5119,34 +5136,50 @@ a:hover, a:focus-visible {
   gap: 1rem;
 }
 
-.insight-transparency-note {
-  position: relative;
-  overflow: hidden;
-  padding: 1.05rem 1.1rem;
-  border-color: rgba(226, 169, 110, 0.48);
-  background:
-    radial-gradient(circle at 92% 8%, rgba(70, 139, 126, 0.18), transparent 45%),
-    linear-gradient(135deg, rgba(122, 55, 58, 0.24), rgba(20, 26, 42, 0.92) 58%, rgba(93, 115, 158, 0.16));
+.insight-transparency-pill {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.55rem 0.7rem;
+  width: fit-content;
+  max-width: 100%;
+  margin: 1.1rem 0 0;
+  padding: 0.52rem 0.72rem 0.52rem 0.58rem;
+  border: 1px solid rgba(226, 169, 110, 0.38);
+  border-radius: 999px;
+  background: linear-gradient(105deg, rgba(93, 55, 55, 0.56), rgba(20, 30, 43, 0.74));
+  box-shadow: inset 0 1px 0 rgba(255, 244, 229, 0.05);
 }
 
-.insight-transparency-note::before {
-  content: '';
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: 3px;
-  background: linear-gradient(#e2a96e, #d7969d 48%, #69aa9a);
+.insight-transparency-pill-label {
+  flex: 0 0 auto;
+  padding: 0.25rem 0.43rem;
+  border: 1px solid rgba(236, 194, 137, 0.45);
+  border-radius: 999px;
+  color: #f1c995;
+  font: 700 0.56rem var(--font-mono);
+  letter-spacing: 0.09em;
+  line-height: 1;
+  text-transform: uppercase;
 }
 
-.insight-transparency-note .eyebrow {
-  margin: 0 0 0.48rem;
-  color: #e9c58f;
-}
-
-.insight-transparency-note p:not(.eyebrow) {
+.insight-transparency-pill p {
+  flex: 1 1 28rem;
   margin: 0;
-  color: #e7eaf1;
-  font-size: 0.91rem;
-  line-height: 1.55;
+  color: #cdd6e0;
+  font-size: 0.76rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 560px) {
+  .insight-transparency-pill {
+    align-items: flex-start;
+    border-radius: 1rem;
+  }
+
+  .insight-transparency-pill p {
+    flex-basis: 100%;
+  }
 }
 
 /* This is deliberately not .ai-talk-panel. That class belongs to the animated
@@ -5294,6 +5327,11 @@ a:hover, a:focus-visible {
 .insight-previous-stack > div {
   display: grid;
   gap: 0.75rem;
+  max-height: min(58vh, 42rem);
+  overflow-y: auto;
+  padding-right: 0.35rem;
+  scrollbar-color: rgba(222, 175, 123, 0.62) rgba(8, 13, 22, 0.5);
+  scrollbar-width: thin;
 }
 
 .insight-previous-tile {
@@ -5487,6 +5525,7 @@ a:hover, a:focus-visible {
 .insight-detail-copy {
   display: grid;
   gap: 1.1rem;
+  min-height: 26rem;
 }
 
 .insight-detail-copy h2,
@@ -5507,6 +5546,38 @@ a:hover, a:focus-visible {
   color: var(--color-silver);
   font-family: var(--font-mono);
   font-size: 0.88em;
+}
+
+.insight-reading-pagination {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 1.6rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(170, 187, 200, 0.18);
+}
+
+.insight-page-button {
+  justify-self: start;
+}
+
+.insight-page-button:last-child {
+  justify-self: end;
+}
+
+.insight-page-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.insight-reading-page-status {
+  margin: 0;
+  color: var(--color-steel-grey);
+  font: 600 0.7rem var(--font-mono);
+  letter-spacing: 0.07em;
+  text-align: center;
+  text-transform: uppercase;
 }
 
 .insight-detail-aside {
@@ -8391,6 +8462,46 @@ a:hover, a:focus-visible {
 .contact-channel-list a:focus-visible {
   border-color: rgba(240, 207, 152, 0.7);
   color: #f0cf98;
+}
+
+.contact-map-link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.32rem;
+  margin-top: 1.75rem;
+  padding: 1rem;
+  border: 1px solid rgba(159, 198, 170, 0.32);
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at 88% 14%, rgba(159, 198, 170, 0.15), transparent 42%),
+    rgba(8, 18, 27, 0.46);
+  color: var(--color-silver);
+  text-decoration: none;
+}
+
+.contact-map-link:hover,
+.contact-map-link:focus-visible {
+  border-color: rgba(240, 207, 152, 0.65);
+  color: #f0cf98;
+}
+
+.contact-map-link strong {
+  color: #d6e3df;
+  font-family: var(--font-headline);
+  font-size: 1.05rem;
+  line-height: 1.25;
+}
+
+.contact-map-link small {
+  color: #b8c8ca;
+  font-size: 0.8rem;
+}
+
+.contact-map-kicker {
+  color: #d3aa83;
+  font-family: var(--font-mono);
+  font-size: 0.67rem;
+  letter-spacing: 0.08em;
 }
 
 @media (max-width: 800px) {

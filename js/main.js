@@ -10,7 +10,7 @@
   // the static site; Row Level Security controls anonymous access.
   const SUPABASE_URL = 'https://wewucfgrtxpolxlxmitq.supabase.co';
   const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_fNprfjd08FhOtHorM-IAjw_fJqDYSyr';
-  const AI_ARTICLE_DISCLOSURE = 'This is AI-generated text. It has been fact-checked against the cited sources, but may still contain errors.';
+  const AI_ARTICLE_DISCLOSURE = 'This article was generated and researched by Arthur, AiGENCY’s persistent-memory AI. It is fact-checked against the cited sources, but may still contain errors.';
 
   async function supabaseInsert(table, payload) {
     const response = await fetch(SUPABASE_URL + '/rest/v1/' + table, {
@@ -59,6 +59,9 @@
   // Covers generated retrospectively for the existing public archive. A
   // Supabase cover_image_* value still wins when an editor has supplied one.
   const insightLocalImages = {
+    // One-off correction: the original generated cover accidentally included
+    // misspelt lettering. This local replacement is intentionally text-free.
+    'what-changed-in-ai-this-weekend-capability-containment': 'assets/generated/insight-capability-containment-text-free-v1.png',
     'ai-agents-identities-wallets-small-businesses': 'assets/generated/insight-ai-agents-identities-wallets-v1.png',
     'legacy-governance': 'assets/generated/insight-ai-governance-sneeze-v1.png',
     'legacy-ai-act': 'assets/generated/insight-ai-act-chatbots-v1.png',
@@ -149,8 +152,8 @@
   }
 
   function insightImage(post) {
-    const candidate = (post && (post.cover_image_path || post.featured_image_path || post.cover_image_url))
-      || (post && insightLocalImages[post.slug]);
+    const candidate = (post && insightLocalImages[post.slug])
+      || (post && (post.cover_image_path || post.featured_image_path || post.cover_image_url));
     if (!candidate) return null;
     try {
       const url = new URL(candidate, window.location.origin);
@@ -361,6 +364,79 @@
     section.hidden = previous.length === 0;
   }
 
+  function mountInsightReadingPages(post) {
+    const body = document.querySelector('[data-insight-detail-body]');
+    const pagination = document.querySelector('[data-insight-reading-pagination]');
+    const download = document.querySelector('[data-insight-download]');
+    if (!body || !pagination) return;
+
+    const blocks = Array.from(body.children);
+    const pages = [];
+    let page = [];
+    let size = 0;
+    const targetSize = 2200;
+
+    blocks.forEach(function(block) {
+      const blockSize = Math.max(1, (block.textContent || '').trim().length);
+      const isHeading = /^H[2-4]$/.test(block.tagName);
+      if (page.length && size + blockSize > targetSize && !isHeading) {
+        pages.push(page);
+        page = [];
+        size = 0;
+      }
+      page.push(block);
+      size += blockSize;
+    });
+    if (page.length) pages.push(page);
+    if (!pages.length) pages.push([]);
+
+    let currentPage = 0;
+    function renderPage() {
+      body.replaceChildren.apply(body, pages[currentPage]);
+      body.dataset.insightCurrentPage = String(currentPage + 1);
+      pagination.replaceChildren();
+      if (pages.length < 2) {
+        pagination.hidden = true;
+        return;
+      }
+      pagination.hidden = false;
+      const previous = createInsightElement('button', '← Previous page', 'insight-page-button');
+      previous.type = 'button';
+      previous.disabled = currentPage === 0;
+      previous.addEventListener('click', function() {
+        if (currentPage === 0) return;
+        currentPage -= 1;
+        renderPage();
+        body.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+      const status = createInsightElement('p', 'Page ' + (currentPage + 1) + ' of ' + pages.length, 'insight-reading-page-status');
+      const next = createInsightElement('button', 'Next page →', 'insight-page-button');
+      next.type = 'button';
+      next.disabled = currentPage === pages.length - 1;
+      next.addEventListener('click', function() {
+        if (currentPage === pages.length - 1) return;
+        currentPage += 1;
+        renderPage();
+        body.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+      pagination.append(previous, status, next);
+    }
+
+    if (download) {
+      download.onclick = function() {
+        const contents = [post.title || 'AiGENCY Field Note', '', post.excerpt || '', '', String(post.body_markdown || '')].join('\n');
+        const blob = new Blob([contents], { type: 'text/markdown;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = (post.slug || 'aigency-field-note') + '.md';
+        link.click();
+        window.setTimeout(function() { URL.revokeObjectURL(url); }, 0);
+      };
+    }
+    renderPage();
+  }
+
   function mountInsightAudio() {
     const control = document.querySelector('[data-insight-speak]');
     const status = document.querySelector('[data-insight-audio-status]');
@@ -378,7 +454,7 @@
       window.speechSynthesis.cancel();
       speaking = false;
       control.setAttribute('aria-pressed', 'false');
-      control.textContent = '🔊 Listen to this Field Note';
+      control.textContent = '🔊 Listen to this page';
       if (status) status.textContent = 'Uses your browser’s built-in speech playback.';
     }
     control.addEventListener('click', function() {
@@ -386,7 +462,8 @@
         stop();
         return;
       }
-      const text = [title.textContent, body.textContent].filter(Boolean).join('. ');
+      const pageLabel = body.dataset.insightCurrentPage ? 'Page ' + body.dataset.insightCurrentPage : 'This Field Note';
+      const text = [pageLabel, title.textContent, body.textContent].filter(Boolean).join('. ');
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'en-GB';
       utterance.onend = stop;
@@ -396,7 +473,7 @@
       speaking = true;
       control.setAttribute('aria-pressed', 'true');
       control.textContent = '■ Stop listening';
-      if (status) status.textContent = 'Reading this Field Note aloud.';
+      if (status) status.textContent = 'Reading this page aloud.';
     });
   }
 
@@ -672,7 +749,9 @@
     title.textContent = post.title || 'AI insight';
     excerpt.textContent = post.excerpt || '';
     if (author) author.textContent = post.author_name || 'AiGENCY Ltd';
-    if (disclosure) disclosure.textContent = post.ai_disclosure || AI_ARTICLE_DISCLOSURE;
+    // Keep every published note on the same compact, plain-language disclosure.
+    // Older database records contain a legacy version of this copy.
+    if (disclosure) disclosure.textContent = AI_ARTICLE_DISCLOSURE;
     const imageUrl = insightImage(post);
     if (image && imageUrl) {
       image.src = imageUrl;
@@ -710,6 +789,7 @@
     });
     sourcesSection.hidden = sourcesList.children.length === 0;
     renderPreviousInsights(previousPosts, post);
+    mountInsightReadingPages(post);
     mountInsightAudio();
     mountInsightChat(post);
     detailSection.hidden = false;
@@ -1022,6 +1102,11 @@
   // ========== MOBILE NAVIGATION ==========
   const navToggle = document.querySelector('.nav-toggle');
   const navMobile = document.querySelector('.nav-mobile');
+
+  // Keep the mobile route explicit: "Start Here" is the same destination,
+  // but people looking for a phone number or email should be able to find it.
+  const mobileContactLink = navMobile?.querySelector('a[href="contact.html"].nav-cta');
+  if (mobileContactLink) mobileContactLink.textContent = 'Contact';
 
   // ========== PRIMARY SITE NAVIGATION ==========
   // The canonical menu is authored directly in every page's HTML so crawlers,
