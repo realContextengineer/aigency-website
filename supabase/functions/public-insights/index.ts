@@ -23,6 +23,8 @@ type InsightPost = {
   cover_image_alt: string | null;
   sources: unknown;
   ai_disclosure: string | null;
+  ai_image_disclosure: string | null;
+  tile_colour: string | null;
 };
 
 function escapeHtml(value: unknown) {
@@ -258,7 +260,7 @@ function sitemapResponse(posts: Array<Pick<InsightPost, "slug" | "updated_at" | 
 }
 
 async function publishedArticle(slug: string) {
-  const { data, error } = await admin.from("insights_posts").select("slug,title,excerpt,body_markdown,category_slug,published_at,updated_at,author_name,author_url,seo_title,meta_description,canonical_url,cover_image_path,cover_image_alt,sources,ai_disclosure").eq("status", "published").eq("slug", slug).maybeSingle();
+  const { data, error } = await admin.from("insights_posts").select("slug,title,excerpt,body_markdown,category_slug,published_at,updated_at,author_name,author_url,seo_title,meta_description,canonical_url,cover_image_path,cover_image_alt,sources,ai_disclosure,ai_image_disclosure,tile_colour").eq("status", "published").eq("slug", slug).maybeSingle();
   if (error) throw error;
   return data as InsightPost | null;
 }
@@ -281,7 +283,7 @@ Deno.serve(async (request) => {
       const requestedPage = Number(url.searchParams.get("page") || "1");
       const page = Number.isInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
       const start = (page - 1) * pageSize;
-      const { data, count, error } = await admin.from("insights_posts").select("slug,title,excerpt,category_slug,published_at,updated_at,author_name,seo_title,meta_description,canonical_url,cover_image_path,cover_image_alt,sources,ai_disclosure", { count: "exact" }).eq("status", "published").order("published_at", { ascending: false }).range(start, start + pageSize - 1);
+      const { data, count, error } = await admin.from("insights_posts").select("slug,title,excerpt,category_slug,published_at,updated_at,author_name,seo_title,meta_description,canonical_url,cover_image_path,cover_image_alt,sources,ai_disclosure,ai_image_disclosure,tile_colour", { count: "exact" }).eq("status", "published").order("published_at", { ascending: false }).range(start, start + pageSize - 1);
       if (error) throw error;
       return htmlResponse(archivePage((data ?? []) as InsightPost[], page, count ?? 0), "public, max-age=60, s-maxage=60, stale-while-revalidate=300");
     }

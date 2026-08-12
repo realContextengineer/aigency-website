@@ -107,15 +107,15 @@
   // Arthur's Supabase collection grows. New database articles lead the page;
   // these links preserve the existing archive rather than making it disappear.
   const legacyInsights = [
-    { slug: 'legacy-governance', href: 'blog-us-uk-ai-governance.html', title: "America's AI governance sneeze.", excerpt: 'What US developments in agent security, AI standards and enforcement could mean for UK businesses.', category_slug: 'ai-governance', published_at: '2026-08-04T00:00:00Z' },
-    { slug: 'legacy-ai-act', href: 'blog-ai-act-chatbots.html', title: 'Are your chatbots legal?', excerpt: 'What UK businesses should understand about AI disclosures and customer-facing assistants.', category_slug: 'ai-governance', published_at: '2026-07-23T00:00:00Z' },
-    { slug: 'legacy-gdpr', href: 'blog-gdpr-ai-workflows.html', title: 'Is your team leaking customer records?', excerpt: 'GDPR-aware habits for using AI tools without exposing unnecessary customer information.', category_slug: 'ai-workflows', published_at: '2026-07-16T00:00:00Z' },
-    { slug: 'legacy-content', href: 'blog-ai-content-search.html', title: 'Why commodity AI content fails.', excerpt: 'Why useful experience and clear authorship matter more than generic output.', category_slug: 'ai-search', published_at: '2026-07-09T00:00:00Z' },
-    { slug: 'legacy-web-readiness', href: 'blog-ai-agent-web-readiness.html', title: 'Bots, AI agents and your website.', excerpt: 'What automated traffic means for structured content, accessible forms and a clear robots policy.', category_slug: 'ai-search', published_at: '2026-06-25T00:00:00Z' },
-    { slug: 'legacy-less-ai', href: 'blog-chatgpt-business.html', title: 'Why your small business needs less AI.', excerpt: 'A practical starting point for choosing useful AI over noise.', category_slug: 'human-centred-ai', published_at: '2026-05-28T00:00:00Z' },
-    { slug: 'legacy-bournemouth', href: 'blog-small-business-bournemouth.html', title: 'How AI can help small businesses in Bournemouth.', excerpt: 'Practical opportunities for local businesses without losing the human part.', category_slug: 'ai-workflows', published_at: '2026-05-14T00:00:00Z' },
-    { slug: 'legacy-oversight', href: 'blog-human-oversight.html', title: 'Human in the loop: why oversight keeps AI human.', excerpt: 'The role of review, judgement and accountability in useful AI systems.', category_slug: 'human-centred-ai', published_at: '2026-04-30T00:00:00Z' },
-    { slug: 'legacy-ethical-agents', href: 'blog-ethical-agents.html', title: 'Ethical AI agents: workflows that respect people.', excerpt: 'How to design agent workflows with practical human boundaries.', category_slug: 'human-centred-ai', published_at: '2026-04-16T00:00:00Z' }
+    { slug: 'legacy-governance', href: '/blog-us-uk-ai-governance.html', title: "America's AI governance sneeze.", excerpt: 'What US developments in agent security, AI standards and enforcement could mean for UK businesses.', category_slug: 'ai-governance', published_at: '2026-08-04T00:00:00Z' },
+    { slug: 'legacy-ai-act', href: '/blog-ai-act-chatbots.html', title: 'Are your chatbots legal?', excerpt: 'What UK businesses should understand about AI disclosures and customer-facing assistants.', category_slug: 'ai-governance', published_at: '2026-07-23T00:00:00Z' },
+    { slug: 'legacy-gdpr', href: '/blog-gdpr-ai-workflows.html', title: 'Is your team leaking customer records?', excerpt: 'GDPR-aware habits for using AI tools without exposing unnecessary customer information.', category_slug: 'ai-workflows', published_at: '2026-07-16T00:00:00Z' },
+    { slug: 'legacy-content', href: '/blog-ai-content-search.html', title: 'Why commodity AI content fails.', excerpt: 'Why useful experience and clear authorship matter more than generic output.', category_slug: 'ai-search', published_at: '2026-07-09T00:00:00Z' },
+    { slug: 'legacy-web-readiness', href: '/blog-ai-agent-web-readiness.html', title: 'Bots, AI agents and your website.', excerpt: 'What automated traffic means for structured content, accessible forms and a clear robots policy.', category_slug: 'ai-search', published_at: '2026-06-25T00:00:00Z' },
+    { slug: 'legacy-less-ai', href: '/blog-chatgpt-business.html', title: 'Why your small business needs less AI.', excerpt: 'A practical starting point for choosing useful AI over noise.', category_slug: 'human-centred-ai', published_at: '2026-05-28T00:00:00Z' },
+    { slug: 'legacy-bournemouth', href: '/blog-small-business-bournemouth.html', title: 'How AI can help small businesses in Bournemouth.', excerpt: 'Practical opportunities for local businesses without losing the human part.', category_slug: 'ai-workflows', published_at: '2026-05-14T00:00:00Z' },
+    { slug: 'legacy-oversight', href: '/blog-human-oversight.html', title: 'Human in the loop: why oversight keeps AI human.', excerpt: 'The role of review, judgement and accountability in useful AI systems.', category_slug: 'human-centred-ai', published_at: '2026-04-30T00:00:00Z' },
+    { slug: 'legacy-ethical-agents', href: '/blog-ethical-agents.html', title: 'Ethical AI agents: workflows that respect people.', excerpt: 'How to design agent workflows with practical human boundaries.', category_slug: 'human-centred-ai', published_at: '2026-04-16T00:00:00Z' }
   ];
 
   function insightCategoryLabel(slug) {
@@ -477,6 +477,67 @@
     });
   }
 
+  const inlineArthurHeads = new WeakMap();
+  const inlineArthurAvatarLoads = new WeakMap();
+  const localArthurRuntime = ['127.0.0.1', 'localhost', '::1'].includes(window.location.hostname);
+
+  function mountInlineArthurAvatar(avatarHost) {
+    if (!avatarHost) return Promise.resolve(null);
+    if (!localArthurRuntime) {
+      avatarHost.classList.add('is-avatar-unavailable');
+      return Promise.resolve(null);
+    }
+    if (inlineArthurAvatarLoads.has(avatarHost)) return inlineArthurAvatarLoads.get(avatarHost);
+    const load = (async function() {
+      try {
+        const module = await import('/vendor/talkinghead/modules/talkinghead.mjs');
+        const head = new module.TalkingHead(avatarHost, {
+          cameraView: 'head', cameraRotateEnable: false, cameraPanEnable: false,
+          cameraZoomEnable: false, modelFPS: 24, modelPixelRatio: 1,
+          lipsyncModules: ['en'], avatarIdleEyeContact: 0.7, avatarIdleHeadMove: 0.18,
+          lightAmbientColor: 0xffead5, lightAmbientIntensity: 2.4,
+          lightDirectColor: 0x8fcfc0, lightDirectIntensity: 16
+        });
+        await head.showAvatar({
+          // Local-only visual proof. This bundled demo asset is not for a public release.
+          url: '/vendor/talkinghead/avatars/avatarsdk.glb', body: 'M', avatarMood: 'neutral',
+          baseline: { headRotateX: -0.04, eyeBlinkLeft: 0.05, eyeBlinkRight: 0.05 },
+          retarget: { Neck: { z: -0.01, rx: -0.15 }, Neck1: { z: -0.01, rx: -0.15 }, Neck2: { z: -0.01, rx: -0.15 }, LeftShoulder: { rz: -0.3 }, RightShoulder: { rz: 0.3 }, scaleToEyesLevel: 1.0, origin: { y: -0.1 } }
+        });
+        head.controls.minDistance = 2;
+        head.setView('head', { cameraDistance: 0, cameraY: 0 });
+        inlineArthurHeads.set(avatarHost, head);
+        avatarHost.classList.add('is-avatar-ready');
+        return head;
+      } catch (error) {
+        avatarHost.classList.add('is-avatar-unavailable');
+        console.warn('Arthur local avatar demo could not load.', error);
+        return null;
+      }
+    })();
+    inlineArthurAvatarLoads.set(avatarHost, load);
+    return load;
+  }
+
+  async function speakInlineArthurReply(avatarHost, payload) {
+    const talkingHead = inlineArthurHeads.get(avatarHost);
+    if (!talkingHead || !payload.audio_url || !Array.isArray(payload.words) || !payload.words.length) return;
+    try {
+      if (talkingHead.audioCtx && (talkingHead.audioCtx.state === 'suspended' || talkingHead.audioCtx.state === 'interrupted')) {
+        await talkingHead.audioCtx.resume();
+      }
+      const audioResponse = await fetch(payload.audio_url, { cache: 'no-store' });
+      if (!audioResponse.ok) throw new Error('Arthur audio could not be loaded.');
+      const audio = await talkingHead.audioCtx.decodeAudioData(await audioResponse.arrayBuffer());
+      talkingHead.speakAudio(
+        { audio: audio, words: payload.words, wtimes: payload.wtimes, wdurations: payload.wdurations },
+        { lipsyncLang: 'en' }
+      );
+    } catch (error) {
+      console.warn('Arthur local speech could not play.', error);
+    }
+  }
+
   function mountInsightChat(post) {
     const chat = document.querySelector('[data-insight-chat]');
     if (!chat || chat.dataset.mounted === 'true') return;
@@ -485,7 +546,9 @@
     const input = chat.querySelector('[data-insight-chat-input]');
     const send = chat.querySelector('[data-insight-chat-send]');
     const remaining = chat.querySelector('[data-insight-chat-remaining]');
+    const avatarHost = chat.querySelector('[data-ai-talker-avatar]');
     if (!messages || !input || !send) return;
+    mountInlineArthurAvatar(avatarHost);
 
     const keyBase = 'aigency-arthur-light-' + post.slug;
     const sessionKey = keyBase + '-session';
@@ -552,6 +615,7 @@
         messageCount += 1;
         window.sessionStorage.setItem(countKey, String(messageCount));
         appendMessage(payload.reply, 'agent');
+        speakInlineArthurReply(avatarHost, payload);
         if (payload.limit_reached) messageCount = 5;
       } catch (error) {
         waiting.remove();
@@ -585,7 +649,9 @@
     const remaining = chat.querySelector('[data-insights-index-chat-remaining]');
     const history = chat.querySelector('[data-insights-chat-history]');
     const historyList = chat.querySelector('[data-insights-chat-history-list]');
+    const avatarHost = chat.querySelector('[data-ai-talker-avatar]');
     if (!messages || !input || !send) return;
+    mountInlineArthurAvatar(avatarHost);
 
     const sessionKey = 'aigency-arthur-light-insights-session';
     const countKey = 'aigency-arthur-light-insights-count';
@@ -694,6 +760,7 @@
         messageCount += 1;
         window.sessionStorage.setItem(countKey, String(messageCount));
         appendMessage(payload.reply, 'agent');
+        speakInlineArthurReply(avatarHost, payload);
         saveHistory(message, payload.reply);
         if (payload.limit_reached) messageCount = 5;
       } catch (error) {
@@ -955,7 +1022,9 @@
   // The browser talks only to the local site bridge. Hermes and its credentials
   // remain behind that boundary, and each visitor keeps only their session ID.
   function mountAiTalker() {
-    if (document.body.classList.contains('insight-detail-page') || document.body.classList.contains('insights-page')) return;
+    // The Insights index needs the same mobile Arthur entry point as the rest
+    // of the site. The individual reader has its own in-page Arthur panel.
+    if (document.body.classList.contains('insight-detail-page')) return;
     if (document.querySelector('.ai-talker')) return;
 
     const talker = document.createElement('button');
@@ -971,15 +1040,72 @@
     panel.setAttribute('role', 'dialog');
     panel.setAttribute('aria-modal', 'false');
     panel.setAttribute('aria-labelledby', 'ai-talk-title');
-    panel.innerHTML = '<div class="ai-talk-panel-head"><div class="ai-talk-panel-identity"><img class="ai-talk-mini-portrait" src="assets/arthur-ai-intern.png" alt=""><div><p class="ai-talk-kicker">AIGENCY · PERSISTENT AI</p><h2 id="ai-talk-title">Talk to Arthur Light</h2></div></div><button type="button" class="ai-talk-close" aria-label="Close Arthur Light">×</button></div><div class="ai-talk-disclosure"><span class="ai-talk-status-dot" aria-hidden="true"></span><p>Arthur Light is AiGENCY’s managed public website guide. Karl stays in the loop.</p></div><div class="ai-talk-messages" aria-live="polite"><div class="ai-talk-message ai-talk-message-agent"><p>What would you like to know?</p></div></div><div class="ai-talk-composer"><input type="text" placeholder="Ask Arthur Light…" aria-label="Ask Arthur Light" maxlength="1600"><button type="button" class="ai-talk-send" aria-label="Send message">↗</button></div><a class="ai-talk-human" href="contact.html?service=AiGENCY%20AI%20conversation">Talk to a person <span aria-hidden="true">↗</span></a>';
+    panel.innerHTML = '<div class="ai-talk-arthur-stage"><div class="ai-talk-arthur-portrait ai-talk-arthur-avatar" data-ai-talker-avatar aria-label="Arthur Light animated avatar"><img src="/assets/arthur-ai-intern.png" alt="Arthur Light"><span class="ai-talk-avatar-loading">Preparing Arthur…</span></div><div class="ai-talk-arthur-name"><p class="ai-talk-kicker">PERSISTENT AI INTERN</p><h2 id="ai-talk-title">Arthur Light</h2></div><button type="button" class="ai-talk-close" aria-label="Close Arthur Light">×</button></div><div class="ai-talk-messages" aria-live="polite"><div class="ai-talk-message ai-talk-message-agent"><p>Hello — I’m Arthur Light, AiGENCY’s persistent AI intern, built on Hermes Agent. I keep the public site and Field Notes in view, so I can help you pick up the thread. What would you like to explore?</p></div></div><div class="ai-talk-composer"><input type="text" placeholder="Ask Arthur Light…" aria-label="Ask Arthur Light" maxlength="1600"><button type="button" class="ai-talk-send" aria-label="Send message">↗</button></div><a class="ai-talk-human" href="/contact.html?service=AiGENCY%20AI%20conversation">Talk to a person <span aria-hidden="true">↗</span></a>';
 
     const closeButton = panel.querySelector('.ai-talk-close');
     const messages = panel.querySelector('.ai-talk-messages');
     const input = panel.querySelector('.ai-talk-composer input');
     const sendButton = panel.querySelector('.ai-talk-send');
+    const avatarHost = panel.querySelector('[data-ai-talker-avatar]');
     const sessionStorageKey = 'aigency-arthur-lite-session';
     let sending = false;
     let closeTimer = null;
+    let demoAvatarStarted = false;
+    let talkingHead = null;
+
+    async function loadLocalDemoAvatar() {
+      if (demoAvatarStarted || !avatarHost) return;
+      demoAvatarStarted = true;
+      if (!localArthurRuntime) {
+        avatarHost.classList.add('is-avatar-unavailable');
+        return;
+      }
+      try {
+        const module = await import('/vendor/talkinghead/modules/talkinghead.mjs');
+        const head = new module.TalkingHead(avatarHost, {
+          cameraView: 'head', cameraRotateEnable: false, cameraPanEnable: false,
+          cameraZoomEnable: false, modelFPS: 24, modelPixelRatio: 1,
+          lipsyncModules: ['en'], avatarIdleEyeContact: 0.7, avatarIdleHeadMove: 0.18,
+          lightAmbientColor: 0xffead5, lightAmbientIntensity: 2.4,
+          lightDirectColor: 0x8fcfc0, lightDirectIntensity: 16
+        });
+        await head.showAvatar({
+          // Local-only visual proof. This bundled demo asset is not for a public release.
+          url: '/vendor/talkinghead/avatars/avatarsdk.glb', body: 'M', avatarMood: 'neutral',
+          baseline: { headRotateX: -0.04, eyeBlinkLeft: 0.05, eyeBlinkRight: 0.05 },
+          retarget: { Neck: { z: -0.01, rx: -0.15 }, Neck1: { z: -0.01, rx: -0.15 }, Neck2: { z: -0.01, rx: -0.15 }, LeftShoulder: { rz: -0.3 }, RightShoulder: { rz: 0.3 }, scaleToEyesLevel: 1.0, origin: { y: -0.1 } }
+        });
+        // Use TalkingHead's stable head framing. The small visual enlargement
+        // is handled by the clipped canvas below, so hair and mouth remain in
+        // frame rather than relying on the model's camera limits.
+        head.controls.minDistance = 2;
+        head.setView('head', { cameraDistance: 0, cameraY: 0 });
+        talkingHead = head;
+        avatarHost.classList.add('is-avatar-ready');
+      } catch (error) {
+        avatarHost.classList.add('is-avatar-unavailable');
+        console.warn('Arthur local avatar demo could not load.', error);
+      }
+    }
+
+    async function speakArthurReply(payload) {
+      if (!talkingHead || !payload.audio_url || !Array.isArray(payload.words) || !payload.words.length) return;
+      try {
+        if (talkingHead.audioCtx && (talkingHead.audioCtx.state === 'suspended' || talkingHead.audioCtx.state === 'interrupted')) {
+          await talkingHead.audioCtx.resume();
+        }
+        const audioResponse = await fetch(payload.audio_url, { cache: 'no-store' });
+        if (!audioResponse.ok) throw new Error('Arthur audio could not be loaded.');
+        const audio = await talkingHead.audioCtx.decodeAudioData(await audioResponse.arrayBuffer());
+        talkingHead.speakAudio(
+          { audio: audio, words: payload.words, wtimes: payload.wtimes, wdurations: payload.wdurations },
+          { lipsyncLang: 'en' }
+        );
+      } catch (error) {
+        // Keep the written Arthur reply available if local speech is unavailable.
+        console.warn('Arthur local speech could not play.', error);
+      }
+    }
 
     function appendMessage(text, kind) {
       const message = document.createElement('div');
@@ -1017,6 +1143,7 @@
         if (!response.ok) throw new Error(payload.error || 'Arthur Light is unavailable.');
         if (payload.session_id) window.localStorage.setItem(sessionStorageKey, payload.session_id);
         appendMessage(payload.reply, 'agent');
+        speakArthurReply(payload);
         if (payload.limit_reached) {
           input.disabled = true;
           sendButton.disabled = true;
@@ -1040,6 +1167,7 @@
 
       if (open) {
         panel.hidden = false;
+        loadLocalDemoAvatar();
         panel.setAttribute('aria-hidden', 'false');
         panel.classList.remove('is-closing');
         panel.classList.remove('is-opening');
@@ -1105,7 +1233,7 @@
 
   // Keep the mobile route explicit: "Start Here" is the same destination,
   // but people looking for a phone number or email should be able to find it.
-  const mobileContactLink = navMobile?.querySelector('a[href="contact.html"].nav-cta');
+  const mobileContactLink = navMobile?.querySelector('a[href="contact.html"].nav-cta, a[href="/contact.html"].nav-cta');
   if (mobileContactLink) mobileContactLink.textContent = 'Contact';
 
   // ========== PRIMARY SITE NAVIGATION ==========
@@ -1153,7 +1281,7 @@
 
     if (!panel.querySelector('[data-nav="a2a"]')) {
       const a2aLink = document.createElement('a');
-      a2aLink.href = 'a2a.html';
+      a2aLink.href = '/a2a.html';
       a2aLink.setAttribute('data-nav', 'a2a');
       a2aLink.className = 'nav-dropdown-link';
       a2aLink.textContent = 'A2A Services';
@@ -1180,7 +1308,7 @@
     if (!a2aItem) {
       const item = document.createElement('li');
       const link = document.createElement('a');
-      link.href = 'a2a.html';
+      link.href = '/a2a.html';
       link.setAttribute('data-nav', 'a2a');
       link.textContent = 'A2A Services';
       item.appendChild(link);
@@ -1252,7 +1380,9 @@
   enhanceEditorialImageDisclosures();
 
   // ========== CURRENT NAVIGATION STATE ==========
-  const navPath = window.location.pathname.split('/').pop() || 'index.html';
+  const navSegments = window.location.pathname.split('/').filter(Boolean);
+  const navPath = navSegments[navSegments.length - 1] || 'index.html';
+  const isCleanInsightRoute = navSegments[0] === 'insights' && navSegments.length > 1;
   const insightPages = [
     'insights.html',
     'faq.html',
@@ -1285,7 +1415,7 @@
         ? 'a2a'
       : navPath === 'aria.html'
         ? 'agents'
-      : insightPages.indexOf(navPath) !== -1
+      : isCleanInsightRoute || insightPages.indexOf(navPath) !== -1
         ? 'insights'
       : navPath === 'about.html'
         ? 'about'
@@ -1508,8 +1638,8 @@
         }).join('');
         limitTarget.textContent = (payload.limits || []).join(' ');
         const handoff = '&website=' + encodeURIComponent(payload.url);
-        emailLink.href = 'contact.html?service=AI%20Search%20Visibility%20Report' + handoff;
-        auditLink.href = 'contact.html?service=Full%20AI%20Search%20Audit' + handoff;
+        emailLink.href = '/contact.html?service=AI%20Search%20Visibility%20Report' + handoff;
+        auditLink.href = '/contact.html?service=Full%20AI%20Search%20Audit' + handoff;
         reportLink.href = '#scan-checks';
         result.hidden = false;
         result.scrollIntoView({ behavior: reducedMotion.matches ? 'auto' : 'smooth', block: 'nearest' });

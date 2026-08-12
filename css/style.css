@@ -58,6 +58,28 @@
   --gradient-bronze: linear-gradient(90deg, #211b18 0%, #3f3028 55%, #634a3a 100%);
   --gradient-bronze-line: linear-gradient(90deg, #6d503e 0%, #8f6a52 55%, #c59b7a 100%);
 
+  /* Current interaction metal: cool platinum with a restrained champagne warmth.
+     Legacy "bronze" class names remain in the HTML for compatibility, but
+     buttons and controls use this material rather than the older orange gold. */
+  --color-champagne-platinum: #e7ddd4;
+  --color-champagne-platinum-bright: #fff8f1;
+  --color-champagne-platinum-mid: #cbbdb3;
+  --color-champagne-platinum-deep: #776a66;
+  --color-champagne-platinum-border: rgba(231, 221, 212, 0.58);
+  --color-champagne-platinum-glow: rgba(231, 221, 212, 0.16);
+  --gradient-champagne-platinum: linear-gradient(
+    135deg,
+    rgba(225, 215, 207, 0.26),
+    rgba(122, 107, 103, 0.28) 52%,
+    rgba(34, 30, 40, 0.74)
+  );
+  --gradient-champagne-platinum-hover: linear-gradient(
+    135deg,
+    rgba(244, 236, 229, 0.34),
+    rgba(151, 134, 127, 0.34) 52%,
+    rgba(43, 37, 48, 0.8)
+  );
+
   /* Gradients */
   --gradient-hermes: linear-gradient(135deg, #111727 0%, #1f332f 58%, #527a64 100%);
   --gradient-outbound: linear-gradient(135deg, rgba(17, 23, 39, 0.96) 0%, rgba(22, 35, 43, 0.88) 58%, rgba(38, 77, 62, 0.78) 100%);
@@ -295,6 +317,12 @@ a:hover, a:focus-visible {
   filter: none;
 }
 
+/* The Insights index already has a full Arthur card in its desktop layout.
+   Keep its floating entry point for the compact mobile header only. */
+.insights-page:not(.insight-detail-page) .ai-talker {
+  display: none;
+}
+
 .ai-talker-seal {
   position: relative;
   display: grid;
@@ -516,6 +544,125 @@ a:hover, a:focus-visible {
   gap: 1rem;
   padding: 1rem 1rem 0.85rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* The floating Arthur conversation begins with Arthur himself, rather than a
+   generic information bar. Editorial cards retain their own compact header. */
+.ai-talk-arthur-stage {
+  position: relative;
+  display: grid;
+  grid-template-columns: 6.35rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.8rem;
+  min-height: 7.1rem;
+  padding: 0.9rem 1rem 0.8rem;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(222, 175, 123, 0.16);
+  background:
+    radial-gradient(circle at 13% 22%, rgba(134, 200, 188, 0.18), transparent 34%),
+    linear-gradient(112deg, rgba(15, 35, 46, 0.82), rgba(27, 24, 34, 0.64));
+}
+
+.ai-talk-arthur-stage::after {
+  content: '';
+  position: absolute;
+  right: -2.8rem;
+  bottom: -4rem;
+  width: 10rem;
+  height: 10rem;
+  border: 1px solid rgba(222, 175, 123, 0.12);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1.3rem rgba(118, 184, 170, 0.035), 0 0 0 2.7rem rgba(222, 175, 123, 0.025);
+  pointer-events: none;
+}
+
+.ai-talk-arthur-portrait {
+  position: relative;
+  z-index: 1;
+  width: 6.35rem;
+  height: 6.35rem;
+  overflow: hidden;
+  border: 1px solid rgba(222, 175, 123, 0.58);
+  border-radius: 0.55rem;
+  background: #101b28;
+  box-shadow: 0 0 0 0.24rem rgba(10, 19, 31, 0.76), 0 0 1.5rem rgba(124, 195, 178, 0.22);
+}
+
+.ai-talk-arthur-portrait img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 16%;
+  transform: scale(1.45);
+  transition: opacity 220ms ease;
+}
+
+.ai-talk-arthur-avatar canvas {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* The 2D portrait is a failure fallback only. Showing it during WebGL start-up
+   makes two Arthurs appear briefly in the same medallion. */
+.ai-talk-arthur-avatar > img {
+  opacity: 0;
+}
+
+.ai-talk-avatar-loading {
+  position: absolute;
+  z-index: 1;
+  right: 0.22rem;
+  bottom: 0.28rem;
+  left: 0.22rem;
+  color: #f2d3aa;
+  font: 600 0.42rem var(--font-mono);
+  letter-spacing: 0.05em;
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+  text-transform: uppercase;
+}
+
+.ai-talk-arthur-avatar.is-avatar-ready img,
+.ai-talk-arthur-avatar.is-avatar-ready .ai-talk-avatar-loading {
+  opacity: 0;
+}
+
+.ai-talk-arthur-avatar.is-avatar-unavailable .ai-talk-avatar-loading {
+  display: none;
+}
+
+.ai-talk-arthur-avatar.is-avatar-unavailable > img {
+  opacity: 1;
+}
+
+.ai-talk-arthur-name {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+
+.ai-talk-arthur-name .ai-talk-kicker {
+  margin-bottom: 0.24rem;
+  color: #a8c8bd;
+}
+
+.ai-talk-arthur-name h2 {
+  color: #f0cf98;
+  font-family: var(--font-headline);
+  font-size: 1.25rem;
+}
+
+.ai-talk-arthur-stage .ai-talk-close {
+  position: relative;
+  z-index: 2;
+  align-self: start;
 }
 
 .ai-talk-panel-identity {
@@ -793,6 +940,10 @@ a:hover, a:focus-visible {
 }
 
 @media (max-width: 1120px) {
+  .insights-page:not(.insight-detail-page) .ai-talker {
+    display: inline-flex;
+  }
+
   .ai-talker {
     top: calc((var(--header-height) - 3.5rem) / 2 + 3px);
     right: auto;
@@ -5229,6 +5380,19 @@ a:hover, a:focus-visible {
 .insight-messenger .ai-talk-panel-head,
 .insights-index-messenger .ai-talk-panel-head {
   padding: 1rem 1rem 0.8rem;
+}
+
+.insight-messenger .ai-talk-arthur-stage,
+.insights-index-messenger .ai-talk-arthur-stage {
+  grid-template-columns: 5.15rem minmax(0, 1fr);
+  min-height: 6.1rem;
+  padding: 0.8rem 1rem;
+}
+
+.insight-messenger .ai-talk-arthur-portrait,
+.insights-index-messenger .ai-talk-arthur-portrait {
+  width: 5.15rem;
+  height: 5.15rem;
 }
 
 .insight-messenger h2,
@@ -12427,6 +12591,221 @@ a:hover, a:focus-visible {
   box-shadow: inset 0 1px 0 rgba(255, 228, 193, 0.12);
   color: #f2c78f;
   outline: 1px solid rgba(218, 164, 104, 0.32);
+}
+
+/* ---------- PLATINUM / CHAMPAGNE INTERACTION MATERIAL ----------
+   Keep the jewel colours on content surfaces. Interactive hardware uses one
+   cooler metal treatment across navigation, cards, readers and Arthur. */
+.nav-desktop a.nav-home,
+.nav-mobile a.nav-home {
+  color: var(--color-champagne-platinum);
+  border-color: rgba(231, 221, 212, 0.46);
+  background: rgba(87, 75, 73, 0.24);
+}
+
+.nav-desktop a.nav-home:hover,
+.nav-desktop a.nav-home:focus-visible,
+.nav-desktop a.nav-home.is-active,
+.nav-mobile a.nav-home:hover,
+.nav-mobile a.nav-home:focus-visible,
+.nav-mobile a.nav-home.is-active {
+  color: var(--color-champagne-platinum-bright);
+  border-color: rgba(247, 239, 232, 0.72);
+  background: rgba(126, 111, 106, 0.34);
+  outline-color: rgba(231, 221, 212, 0.28);
+}
+
+.nav-desktop a.nav-home::after,
+.nav-mobile a.nav-home::after {
+  display: none;
+  border: 0;
+  background: none;
+}
+
+.nav-desktop a.nav-cta,
+.nav-mobile a.nav-cta,
+.btn-primary.btn-bronze,
+.bento-card.outbound-theme .btn-primary,
+.insight-return-row .btn-primary {
+  color: var(--color-champagne-platinum);
+  border-color: var(--color-champagne-platinum-border);
+  background: var(--gradient-champagne-platinum);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 250, 246, 0.2),
+    inset 0 -8px 16px rgba(22, 18, 27, 0.18),
+    0 8px 22px rgba(0, 0, 0, 0.24),
+    0 0 18px rgba(231, 221, 212, 0.035);
+  text-shadow: 0 1px 0 rgba(20, 17, 24, 0.72);
+}
+
+.nav-desktop a.nav-cta:hover,
+.nav-desktop a.nav-cta:focus-visible,
+.nav-mobile a.nav-cta:hover,
+.nav-mobile a.nav-cta:focus-visible,
+.btn-primary.btn-bronze:hover,
+.btn-primary.btn-bronze:focus-visible,
+.bento-card.outbound-theme .btn-primary:hover,
+.bento-card.outbound-theme .btn-primary:focus-visible,
+.insight-return-row .btn-primary:hover,
+.insight-return-row .btn-primary:focus-visible {
+  color: var(--color-champagne-platinum-bright);
+  border-color: rgba(250, 243, 237, 0.78);
+  background: var(--gradient-champagne-platinum-hover);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 252, 249, 0.28),
+    0 10px 25px rgba(0, 0, 0, 0.26),
+    0 0 20px var(--color-champagne-platinum-glow);
+  outline-color: rgba(231, 221, 212, 0.34);
+}
+
+/* Insight tile actions stay quiet over their four jewel surfaces, but the
+   rim and lettering now match the site's platinum/champagne hardware. */
+.insights-page .insight-card .btn-primary,
+.insights-page .insight-card .btn-primary.btn-bronze {
+  color: var(--color-champagne-platinum);
+  border-color: rgba(231, 221, 212, 0.52);
+  background: linear-gradient(135deg, rgba(231, 221, 212, 0.1), rgba(5, 13, 27, 0.48));
+  box-shadow: inset 0 1px 0 rgba(255, 249, 243, 0.1);
+  text-shadow: 0 1px 0 rgba(18, 16, 23, 0.74);
+}
+
+.insights-page .insight-card .btn-primary:hover,
+.insights-page .insight-card .btn-primary:focus-visible,
+.insights-page .insight-card .btn-primary.btn-bronze:hover,
+.insights-page .insight-card .btn-primary.btn-bronze:focus-visible {
+  color: var(--color-champagne-platinum-bright);
+  border-color: rgba(250, 243, 237, 0.74);
+  background: linear-gradient(135deg, rgba(244, 236, 229, 0.16), rgba(5, 13, 27, 0.58));
+  box-shadow: inset 0 1px 0 rgba(255, 252, 249, 0.14), 0 0 16px rgba(231, 221, 212, 0.08);
+  outline-color: rgba(231, 221, 212, 0.34);
+}
+
+.ai-talk-send,
+.insight-download-button,
+.insight-page-button,
+.insight-audio-button,
+.insights-library-year,
+.insights-page-link {
+  transition:
+    color var(--transition-fast),
+    border-color var(--transition-fast),
+    background var(--transition-fast),
+    box-shadow var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.ai-talk-send,
+.insight-download-button {
+  color: var(--color-champagne-platinum);
+  border-color: rgba(231, 221, 212, 0.5);
+  background: rgba(111, 96, 92, 0.2);
+}
+
+.ai-talk-send:hover,
+.ai-talk-send:focus-visible,
+.insight-download-button:hover,
+.insight-download-button:focus-visible {
+  color: var(--color-champagne-platinum-bright);
+  border-color: rgba(250, 243, 237, 0.72);
+  background: rgba(145, 128, 121, 0.3);
+  box-shadow: 0 0 16px rgba(231, 221, 212, 0.11);
+  outline-color: rgba(231, 221, 212, 0.32);
+}
+
+.ai-talk-close,
+.portfolio-sound-toggle,
+.portfolio-carousel-control {
+  color: var(--color-champagne-platinum);
+  border-color: rgba(231, 221, 212, 0.46);
+}
+
+.ai-talk-close:hover,
+.ai-talk-close:focus-visible,
+.portfolio-sound-toggle:hover,
+.portfolio-sound-toggle:focus-visible,
+.portfolio-carousel-control:hover,
+.portfolio-carousel-control:focus-visible {
+  color: var(--color-champagne-platinum-bright);
+  border-color: rgba(250, 243, 237, 0.72);
+  background: rgba(145, 128, 121, 0.22);
+  outline-color: rgba(231, 221, 212, 0.3);
+}
+
+.ai-search-text-cta {
+  color: var(--color-champagne-platinum);
+  border-color: var(--color-champagne-platinum-border);
+  background: var(--gradient-champagne-platinum);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 250, 246, 0.2),
+    inset 0 -8px 16px rgba(22, 18, 27, 0.18),
+    0 8px 22px rgba(0, 0, 0, 0.24);
+}
+
+.ai-search-text-cta:hover,
+.ai-search-text-cta:focus-visible {
+  color: var(--color-champagne-platinum-bright);
+  border-color: rgba(250, 243, 237, 0.78);
+  background: var(--gradient-champagne-platinum-hover);
+  box-shadow: inset 0 1px 0 rgba(255, 252, 249, 0.28), 0 10px 25px rgba(0, 0, 0, 0.26);
+  outline-color: rgba(231, 221, 212, 0.34);
+}
+
+.insights-library-year:hover,
+.insights-library-year:focus-visible,
+.insights-library-year.is-active {
+  color: var(--color-champagne-platinum-bright);
+  border-color: rgba(231, 221, 212, 0.58);
+  background: rgba(117, 101, 97, 0.2);
+}
+
+.insights-page-link {
+  color: var(--color-champagne-platinum-mid);
+}
+
+.insights-page-link:hover,
+.insights-page-link:focus-visible {
+  color: var(--color-champagne-platinum-bright);
+}
+
+.ai-talker,
+.ai-talker-label,
+.ai-talk-kicker,
+.ai-talk-status,
+.ai-talk-limit,
+.insight-chat-limit {
+  color: var(--color-champagne-platinum);
+}
+
+.ai-talker-a {
+  stroke: var(--color-champagne-platinum);
+}
+
+.ai-talker-label,
+.ai-talk-prompts button {
+  border-color: rgba(231, 221, 212, 0.4);
+}
+
+.ai-talk-human {
+  color: var(--color-champagne-platinum-mid);
+}
+
+.ai-talk-human:hover,
+.ai-talk-human:focus-visible {
+  color: var(--color-champagne-platinum-bright);
+}
+
+@media (max-width: 1120px) {
+  .ai-talker::before {
+    background: linear-gradient(
+      to bottom,
+      rgba(231, 221, 212, 0.52),
+      rgba(231, 221, 212, 0.05)
+    );
+  }
+
+  .ai-talker::after {
+    border-bottom-color: rgba(231, 221, 212, 0.56);
+  }
 }
 
 /* ---------- AI SERVICES: FOUR ROUTE DIRECTORY ---------- */
