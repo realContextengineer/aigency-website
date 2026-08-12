@@ -5119,6 +5119,36 @@ a:hover, a:focus-visible {
   gap: 1rem;
 }
 
+.insight-transparency-note {
+  position: relative;
+  overflow: hidden;
+  padding: 1.05rem 1.1rem;
+  border-color: rgba(226, 169, 110, 0.48);
+  background:
+    radial-gradient(circle at 92% 8%, rgba(70, 139, 126, 0.18), transparent 45%),
+    linear-gradient(135deg, rgba(122, 55, 58, 0.24), rgba(20, 26, 42, 0.92) 58%, rgba(93, 115, 158, 0.16));
+}
+
+.insight-transparency-note::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: linear-gradient(#e2a96e, #d7969d 48%, #69aa9a);
+}
+
+.insight-transparency-note .eyebrow {
+  margin: 0 0 0.48rem;
+  color: #e9c58f;
+}
+
+.insight-transparency-note p:not(.eyebrow) {
+  margin: 0;
+  color: #e7eaf1;
+  font-size: 0.91rem;
+  line-height: 1.55;
+}
+
 /* This is deliberately not .ai-talk-panel. That class belongs to the animated
    floating popup; the editorial cards use the same Arthur visual language,
    without inheriting popup positioning or animation state. */

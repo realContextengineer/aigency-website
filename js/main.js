@@ -10,6 +10,7 @@
   // the static site; Row Level Security controls anonymous access.
   const SUPABASE_URL = 'https://wewucfgrtxpolxlxmitq.supabase.co';
   const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_fNprfjd08FhOtHorM-IAjw_fJqDYSyr';
+  const AI_ARTICLE_DISCLOSURE = 'This is AI-generated text. It has been fact-checked against the cited sources, but may still contain errors.';
 
   async function supabaseInsert(table, payload) {
     const response = await fetch(SUPABASE_URL + '/rest/v1/' + table, {
@@ -671,7 +672,7 @@
     title.textContent = post.title || 'AI insight';
     excerpt.textContent = post.excerpt || '';
     if (author) author.textContent = post.author_name || 'AiGENCY Ltd';
-    if (disclosure) disclosure.textContent = post.ai_disclosure || 'This article was researched and drafted with AI assistance, then checked against its cited sources.';
+    if (disclosure) disclosure.textContent = post.ai_disclosure || AI_ARTICLE_DISCLOSURE;
     const imageUrl = insightImage(post);
     if (image && imageUrl) {
       image.src = imageUrl;
