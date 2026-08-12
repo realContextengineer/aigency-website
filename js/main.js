@@ -731,7 +731,12 @@
 
   async function loadInsightDetail() {
     if (!document.querySelector('[data-insight-detail-section]')) return;
-    const slug = new URLSearchParams(window.location.search).get('slug');
+    // Local preview opens the reusable article page with ?slug=. Netlify keeps
+    // the public clean URL in the address bar after its internal rewrite, so
+    // recover the same slug from /insights/<slug>/ in production.
+    const querySlug = new URLSearchParams(window.location.search).get('slug');
+    const routeMatch = window.location.pathname.match(/^\/insights\/([a-z0-9]+(?:-[a-z0-9]+)*)\/?$/);
+    const slug = querySlug || (routeMatch ? routeMatch[1] : null);
     if (!slug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
       renderInsightDetailError();
       return;
