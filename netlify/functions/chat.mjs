@@ -1,3 +1,5 @@
+import { relayFetch } from "./relay.mjs";
+
 const jsonHeaders = {
   "content-type": "application/json; charset=utf-8",
   "cache-control": "no-store",
@@ -21,7 +23,7 @@ export default async (request) => {
   }
 
   try {
-    const upstream = await fetch(`${relayUrl}/api/chat`, {
+    const upstream = await relayFetch(new URL("/api/chat", `${relayUrl}/`), {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -45,7 +47,7 @@ export default async (request) => {
       body = JSON.stringify({ error: "Arthur Light returned an invalid response." });
     }
     return new Response(body, { status: upstream.status, headers: jsonHeaders });
-  } catch (error) {
+  } catch {
     let relayHost = "unknown";
     try {
       relayHost = new URL(relayUrl).hostname;
@@ -53,8 +55,7 @@ export default async (request) => {
       // Keep the public error generic even if configuration is malformed.
     }
     console.error("Arthur relay fetch failed", { relayHost });
-    const diagnostic = String(error?.cause?.code || error?.message || error?.name || "unknown").slice(0, 160);
-    return new Response(JSON.stringify({ error: "Arthur Light could not be reached.", diagnostic }), {
+    return new Response(JSON.stringify({ error: "Arthur Light could not be reached." }), {
       status: 502,
       headers: jsonHeaders,
     });

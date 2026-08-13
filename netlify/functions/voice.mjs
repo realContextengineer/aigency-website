@@ -12,7 +12,7 @@ export default async (request) => {
   }
 
   try {
-    const upstream = await fetch(`${relayUrl}/.local-voice/${match[1]}`, {
+    const upstream = await relayFetch(new URL(`/.local-voice/${match[1]}`, `${relayUrl}/`), {
       headers: { authorization: `Bearer ${relayToken}` },
     });
     if (!upstream.ok) return new Response("Not found.", { status: upstream.status });
@@ -28,3 +28,4 @@ export default async (request) => {
     return new Response("Arthur Light voice is unavailable.", { status: 502 });
   }
 };
+import { relayFetch } from "./relay.mjs";
