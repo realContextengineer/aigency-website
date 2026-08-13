@@ -1,3 +1,5 @@
+import { relayFetch } from "./relay.mjs";
+
 export default async (request) => {
   if (request.method !== "GET") {
     return new Response("Method not allowed.", { status: 405 });
@@ -28,4 +30,3 @@ export default async (request) => {
     return new Response("Arthur Light voice is unavailable.", { status: 502 });
   }
 };
-import { relayFetch } from "./relay.mjs";
