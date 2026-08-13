@@ -2100,7 +2100,16 @@
           return;
         }
         const distance = (index - activePortfolioTile + portfolioTiles.length) % portfolioTiles.length;
-        if (distance === 0) return;
+        if (distance === 0) {
+          event.preventDefault();
+          const preview = window.open(
+            tile.href,
+            'aigencyDesignDemo',
+            'popup=yes,width=1280,height=820,menubar=no,toolbar=no,location=no,status=no,resizable=yes,scrollbars=yes'
+          );
+          if (!preview) window.location.assign(tile.href);
+          return;
+        }
         event.preventDefault();
         turnPortfolioWheel(distance === portfolioTiles.length - 1 ? -1 : distance);
       });
