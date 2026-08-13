@@ -1,0 +1,4 @@
+.local-voice/
+__pycache__/
+*.pyc
+.arthur-relay-token

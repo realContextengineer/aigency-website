@@ -28,8 +28,17 @@ from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parent
 HERMES_BIN = Path("/Users/aigencyltd/.hermes/hermes-agent/venv/bin/hermes")
-KOKORO_PYTHON = Path("/Users/aigencyltd/Desktop/software builds/Heavy Life/heavy-life-app/.kokoro-venv/bin/python")
-KOKORO_WORKER = Path("/Users/aigencyltd/Desktop/software builds/Heavy Life/heavy-life-app/kokoro_worker.py")
+RELAY_TOKEN_FILE = ROOT / ".arthur-relay-token"
+HEAVY_LIFE_ROOT = Path(
+    os.environ.get(
+        "AIGENCY_HEAVY_LIFE_ROOT",
+        "/Users/aigencyltd/Documents/DESIGN PROJECTS/Heavy Life/heavy-life-app",
+    )
+)
+if not HEAVY_LIFE_ROOT.is_dir():
+    HEAVY_LIFE_ROOT = Path("/Users/aigencyltd/Desktop/software builds/Heavy Life/heavy-life-app")
+KOKORO_PYTHON = HEAVY_LIFE_ROOT / ".kokoro-venv/bin/python"
+KOKORO_WORKER = HEAVY_LIFE_ROOT / "kokoro_worker.py"
 PROFILE = "arthur-lite"
 SUPABASE_URL = os.environ.get("AIGENCY_SUPABASE_URL", "https://wewucfgrtxpolxlxmitq.supabase.co")
 SUPABASE_PUBLISHABLE_KEY = os.environ.get("AIGENCY_SUPABASE_PUBLISHABLE_KEY", "sb_publishable_fNprfjd08FhOtHorM-IAjw_fJqDYSyr")
@@ -46,7 +55,9 @@ VOICE_WORD_PATTERN = re.compile(r"[A-Za-z0-9]+(?:['’-][A-Za-z0-9]+)*")
 KOKORO_PROCESS: subprocess.Popen[str] | None = None
 KOKORO_PROCESS_LOCK = threading.Lock()
 
-default_origins = "http://127.0.0.1:8795,http://localhost:8795"
+SERVER_HOST = os.environ.get("AIGENCY_HOST", "127.0.0.1")
+SERVER_PORT = int(os.environ.get("AIGENCY_PORT", "8795"))
+default_origins = f"http://127.0.0.1:{SERVER_PORT},http://localhost:{SERVER_PORT}"
 ALLOWED_ORIGINS = {
     origin.strip().rstrip("/")
     for origin in os.environ.get("AIGENCY_ALLOWED_ORIGINS", default_origins).split(",")
@@ -56,8 +67,23 @@ REQUEST_TIMES: dict[str, deque[float]] = defaultdict(deque)
 SESSION_MESSAGE_COUNTS: dict[str, int] = defaultdict(int)
 
 
-def permitted_origin(origin: str | None) -> bool:
-    return not origin or origin.rstrip("/") in ALLOWED_ORIGINS
+# The relay token is separate from OpenAuth and from any Hermes gateway token.
+# It is deliberately dedicated to this one public Netlify relay.
+try:
+    FILE_RELAY_TOKEN = RELAY_TOKEN_FILE.read_text(encoding="utf-8").strip()
+except OSError:
+    FILE_RELAY_TOKEN = ""
+RELAY_TOKEN = os.environ.get("AIGENCY_RELAY_TOKEN") or FILE_RELAY_TOKEN
+LOCAL_HOSTS = {"127.0.0.1", "localhost", "::1"}
+
+
+def permitted_request(origin: str | None, authorization: str | None, host: str | None) -> bool:
+    hostname = (host or "").rsplit("@", 1)[-1].split(":", 1)[0].strip("[]").lower()
+    if hostname in LOCAL_HOSTS and (not origin or origin.rstrip("/") in ALLOWED_ORIGINS):
+        return True
+    if not RELAY_TOKEN or not authorization or not authorization.startswith("Bearer "):
+        return False
+    return secrets.compare_digest(authorization[7:].strip(), RELAY_TOKEN)
 
 
 def within_rate_limit(client_ip: str) -> bool:
@@ -307,11 +333,25 @@ class AiGENCYHandler(SimpleHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
+    def do_GET(self) -> None:  # noqa: N802
+        if urlparse(self.path).path.startswith("/.local-voice/") and not permitted_request(
+            self.headers.get("Origin"),
+            self.headers.get("Authorization"),
+            self.headers.get("Host"),
+        ):
+            self.send_json(HTTPStatus.FORBIDDEN, {"error": "That voice request is not allowed."})
+            return
+        super().do_GET()
+
     def do_POST(self) -> None:  # noqa: N802
         if urlparse(self.path).path != "/api/chat":
             self.send_json(HTTPStatus.NOT_FOUND, {"error": "Not found."})
             return
-        if not permitted_origin(self.headers.get("Origin")):
+        if not permitted_request(
+            self.headers.get("Origin"),
+            self.headers.get("Authorization"),
+            self.headers.get("Host"),
+        ):
             self.send_json(HTTPStatus.FORBIDDEN, {"error": "This chat request is not allowed."})
             return
         if not HERMES_BIN.is_file():
@@ -400,10 +440,8 @@ class ReusableThreadingHTTPServer(ThreadingHTTPServer):
 
 
 def main() -> None:
-    host = os.environ.get("AIGENCY_HOST", "127.0.0.1")
-    port = int(os.environ.get("AIGENCY_PORT", "8795"))
-    with ReusableThreadingHTTPServer((host, port), AiGENCYHandler) as server:
-        print(f"AiGENCY local server listening on http://{host}:{port}")
+    with ReusableThreadingHTTPServer((SERVER_HOST, SERVER_PORT), AiGENCYHandler) as server:
+        print(f"AiGENCY local server listening on http://{SERVER_HOST}:{SERVER_PORT}")
         server.serve_forever()
 
 
