@@ -45,7 +45,7 @@ export default async (request) => {
       body = JSON.stringify({ error: "Arthur Light returned an invalid response." });
     }
     return new Response(body, { status: upstream.status, headers: jsonHeaders });
-  } catch {
+  } catch (error) {
     let relayHost = "unknown";
     try {
       relayHost = new URL(relayUrl).hostname;
@@ -53,7 +53,8 @@ export default async (request) => {
       // Keep the public error generic even if configuration is malformed.
     }
     console.error("Arthur relay fetch failed", { relayHost });
-    return new Response(JSON.stringify({ error: "Arthur Light could not be reached." }), {
+    const diagnostic = String(error?.cause?.code || error?.message || error?.name || "unknown").slice(0, 160);
+    return new Response(JSON.stringify({ error: "Arthur Light could not be reached.", diagnostic }), {
       status: 502,
       headers: jsonHeaders,
     });
