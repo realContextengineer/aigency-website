@@ -29,9 +29,8 @@
   }
 
   // ========== INSIGHTS PUBLISHING ==========
-  // The shelf view is deliberately capped for the lead layout. The published
-  // table remains the complete public catalogue, so overflow articles can
-  // continue into the archive and remain available to the reader.
+  // The published table is the complete public catalogue. The newest published
+  // article leads the page; the archive below retains every published note.
   async function supabaseSelect(table, query) {
     const response = await fetch(SUPABASE_URL + '/rest/v1/' + table + '?' + query, {
       headers: {
@@ -922,17 +921,15 @@
     try {
       const posts = await supabaseSelect('insights_posts', publishedInsightsQuery());
       const visiblePosts = Array.isArray(posts) ? posts.filter(function(post) { return post && post.slug; }) : [];
-      const shelfPosts = visiblePosts.filter(function(post) { return post.display_zone !== 'archive'; });
-      const featured = shelfPosts.find(function(post) { return post.display_zone === 'featured'; });
-      const latest = shelfPosts.find(function(post) { return !featured || post.slug !== featured.slug; });
+      const featured = visiblePosts.find(function(post) { return post.display_zone === 'featured'; });
+      const latest = visiblePosts.find(function(post) { return !featured || post.slug !== featured.slug; });
       if (featured && featuredCard) renderInsightCard(featuredCard, featured, 'featured');
       else if (featuredCard) renderEmptyLeadCard(featuredCard, 'featured');
       if (latest && latestCard) renderInsightCard(latestCard, latest, 'latest');
       else if (latestCard) renderEmptyLeadCard(latestCard, 'latest');
 
       if (!librarySection || !libraryYears || !libraryGrid || !libraryEmpty || !libraryPagination) return;
-      const leadSlugs = new Set([featured, latest].filter(Boolean).map(function(post) { return post.slug; }));
-      const libraryPosts = visiblePosts.filter(function(post) { return !leadSlugs.has(post.slug); }).concat(legacyInsights);
+      const libraryPosts = visiblePosts.concat(legacyInsights);
       const years = Array.from(new Set(libraryPosts.map(function(post) {
         const date = new Date(post.published_at);
         return Number.isNaN(date.getTime()) ? null : String(date.getFullYear());
