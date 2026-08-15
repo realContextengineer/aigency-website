@@ -29,9 +29,9 @@
   }
 
   // ========== INSIGHTS PUBLISHING ==========
-  // The public view is deliberately capped by the database, and we cap again
-  // here. New agent-published posts replace fixed cards; they never append a
-  // growing feed to this page.
+  // The shelf view is deliberately capped for the lead layout. The published
+  // table remains the complete public catalogue, so overflow articles can
+  // continue into the archive and remain available to the reader.
   async function supabaseSelect(table, query) {
     const response = await fetch(SUPABASE_URL + '/rest/v1/' + table + '?' + query, {
       headers: {
@@ -43,6 +43,18 @@
       throw new Error('The public Insights feed could not be loaded.');
     }
     return response.json();
+  }
+
+  const PUBLIC_INSIGHTS_SELECT = [
+    'slug', 'title', 'published_at', 'updated_at', 'category_slug',
+    'display_zone', 'display_order', 'excerpt', 'body_markdown', 'sources',
+    'author_name', 'author_url', 'seo_title', 'meta_description',
+    'canonical_url', 'cover_image_path', 'cover_image_alt', 'ai_disclosure'
+  ].join(',');
+
+  function publishedInsightsQuery(order) {
+    return 'select=' + PUBLIC_INSIGHTS_SELECT
+      + '&status=eq.published&order=' + (order || 'published_at.desc,display_order.asc');
   }
 
   const insightColourThemes = {
@@ -337,15 +349,15 @@
     const section = document.querySelector('[data-insight-previous-section]');
     if (!list || !section) return;
     list.replaceChildren();
-    const currentTime = new Date(currentPost.published_at || 0).getTime();
     // Keep the live Supabase notes and the established AiGENCY archive together
-    // here. The editorial rail is a chronological way into the whole library,
-    // not just the small number of notes published since the new desk went live.
+    // here. The rail is a catalogue of the whole library, so an overflow post
+    // is still reachable when a visitor opens any other Field Note.
+    const seen = new Set();
     const previous = (Array.isArray(posts) ? posts : []).concat(legacyInsights)
       .filter(function(post) {
-        if (!post || !post.slug || post.slug === currentPost.slug) return false;
-        const publishedTime = new Date(post.published_at || 0).getTime();
-        return !Number.isNaN(currentTime) && !Number.isNaN(publishedTime) && publishedTime < currentTime;
+        if (!post || !post.slug || post.slug === currentPost.slug || seen.has(post.slug)) return false;
+        seen.add(post.slug);
+        return true;
       })
       .sort(function(a, b) { return new Date(b.published_at).getTime() - new Date(a.published_at).getTime(); });
 
@@ -886,8 +898,8 @@
     }
     try {
       const results = await Promise.all([
-        supabaseSelect('insights_page', 'select=slug,title,published_at,category_slug,display_order,excerpt,body_markdown,sources&order=published_at.desc,display_order.asc'),
-        supabaseSelect('insights_page', 'select=*&slug=eq.' + encodeURIComponent(slug) + '&limit=1')
+        supabaseSelect('insights_posts', publishedInsightsQuery()),
+        supabaseSelect('insights_posts', 'select=' + PUBLIC_INSIGHTS_SELECT + '&status=eq.published&slug=eq.' + encodeURIComponent(slug) + '&limit=1')
       ]);
       const post = Array.isArray(results[1]) ? results[1][0] : null;
       if (!post) throw new Error('Insight not found');
@@ -908,10 +920,11 @@
     if (!latestCard && !featuredCard && !libraryGrid) return;
 
     try {
-      const posts = await supabaseSelect('insights_page', 'select=*&order=published_at.desc,display_order.asc');
+      const posts = await supabaseSelect('insights_posts', publishedInsightsQuery());
       const visiblePosts = Array.isArray(posts) ? posts.filter(function(post) { return post && post.slug; }) : [];
-      const featured = visiblePosts.find(function(post) { return post.display_zone === 'featured'; });
-      const latest = visiblePosts.find(function(post) { return !featured || post.slug !== featured.slug; });
+      const shelfPosts = visiblePosts.filter(function(post) { return post.display_zone !== 'archive'; });
+      const featured = shelfPosts.find(function(post) { return post.display_zone === 'featured'; });
+      const latest = shelfPosts.find(function(post) { return !featured || post.slug !== featured.slug; });
       if (featured && featuredCard) renderInsightCard(featuredCard, featured, 'featured');
       else if (featuredCard) renderEmptyLeadCard(featuredCard, 'featured');
       if (latest && latestCard) renderInsightCard(latestCard, latest, 'latest');

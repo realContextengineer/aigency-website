@@ -180,7 +180,7 @@ def clean_public_reply(reply: str) -> str:
 
 
 def fetch_public_insights() -> list[dict[str, Any]]:
-    url = SUPABASE_URL + "/rest/v1/insights_page?select=slug,title,published_at,excerpt,body_markdown,sources&order=published_at.desc"
+    url = SUPABASE_URL + "/rest/v1/insights_posts?select=slug,title,published_at,excerpt,body_markdown,sources&status=eq.published&order=published_at.desc"
     request = urllib.request.Request(url, headers={"apikey": SUPABASE_PUBLISHABLE_KEY, "Accept": "application/json"})
     with urllib.request.urlopen(request, timeout=8) as response:
         payload = json.loads(response.read().decode("utf-8"))
