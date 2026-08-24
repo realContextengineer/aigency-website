@@ -155,6 +155,10 @@
     return '/insights/' + encodeURIComponent(slug) + '/';
   }
 
+  function homepageInsightLink(post) {
+    return post && post.href ? post.href : insightLink(post && post.slug);
+  }
+
   function createInsightElement(tag, text, className) {
     const element = document.createElement(tag);
     if (className) element.className = className;
@@ -908,6 +912,80 @@
     }
   }
 
+  function homepageInsightTimestamp(post) {
+    const timestamp = new Date(post && (post.published_at || post.updated_at)).getTime();
+    return Number.isNaN(timestamp) ? 0 : timestamp;
+  }
+
+  function newestHomepageInsights(posts) {
+    const seen = new Set();
+    return (Array.isArray(posts) ? posts : []).concat(legacyInsights)
+      .filter(function(post) {
+        if (!post || !post.slug || seen.has(post.slug)) return false;
+        seen.add(post.slug);
+        return true;
+      })
+      .sort(function(a, b) {
+        return homepageInsightTimestamp(b) - homepageInsightTimestamp(a);
+      })
+      .slice(0, 3);
+  }
+
+  function renderHomepageInsightCard(card, post) {
+    const theme = insightThemeFor(post, 'homepage');
+    const imageUrl = insightImage(post);
+    const articleLink = document.createElement('a');
+    articleLink.href = homepageInsightLink(post);
+    articleLink.className = 'service-link';
+    articleLink.append('Read the article ');
+    articleLink.append(createInsightElement('span', '↗'));
+    articleLink.lastElementChild.setAttribute('aria-hidden', 'true');
+
+    card.className = 'bento-card span-4 ' + theme + ' homepage-blog-card';
+    card.hidden = false;
+    const body = document.createElement('div');
+    body.className = 'homepage-insight-body';
+    body.append(
+      createInsightElement('p', insightMeta(post), 'eyebrow'),
+      createInsightElement('h3', post.title || 'Untitled Insight'),
+      createInsightElement('p', post.excerpt || 'Read the latest AiGENCY Insight.'),
+      articleLink
+    );
+    if (imageUrl) {
+      const media = document.createElement('div');
+      media.className = 'homepage-insight-media';
+      media.setAttribute('aria-hidden', 'true');
+      const image = document.createElement('img');
+      image.src = imageUrl;
+      image.alt = '';
+      image.loading = 'lazy';
+      image.decoding = 'async';
+      media.appendChild(image);
+      card.replaceChildren(media, body);
+    } else {
+      card.replaceChildren(body);
+    }
+  }
+
+  async function loadHomepageInsights() {
+    const cards = Array.from(document.querySelectorAll('[data-homepage-insight-slot]'));
+    if (!cards.length) return;
+
+    try {
+      const posts = await supabaseSelect('insights_posts', publishedInsightsQuery());
+      const latestPosts = newestHomepageInsights(posts);
+      latestPosts.forEach(function(post, index) {
+        renderHomepageInsightCard(cards[index], post);
+      });
+      cards.slice(latestPosts.length).forEach(function(card) {
+        card.hidden = true;
+      });
+    } catch (error) {
+      // The three server-rendered cards remain as a readable fallback if the
+      // public feed is temporarily unavailable. No archive content is lost.
+    }
+  }
+
   async function loadPublishedInsights() {
     const latestCard = document.querySelector('[data-insights-latest]');
     const featuredCard = document.querySelector('[data-insights-featured]');
@@ -1021,6 +1099,7 @@
 
   loadInsightDetail();
   loadPublishedInsights();
+  loadHomepageInsights();
   mountInsightsIndexChat();
 
   // ========== ARTHUR LITE ENTRY POINT ==========
@@ -1226,7 +1305,39 @@
     document.body.appendChild(panel);
   }
 
-  mountAiTalker();
+  // Arthur Light now has one isolated, site-wide implementation. Keep the
+  // previous mount function above as an inactive visual baseline until the
+  // replacement has been approved on desktop and mobile; do not run both.
+  function loadArthurLite() {
+    function appendArthurScript() {
+      if (document.querySelector('script[data-arthur-lite-script]')) return;
+      const script = document.createElement('script');
+      script.src = 'js/arthur-lite.js?v=sitewide-readonly-v1-aug-2026';
+      script.dataset.arthurLiteScript = '';
+      document.head.appendChild(script);
+    }
+
+    const existingStylesheet = document.querySelector('link[data-arthur-lite-style]');
+    if (existingStylesheet) {
+      if (existingStylesheet.sheet) {
+        appendArthurScript();
+      } else {
+        existingStylesheet.addEventListener('load', appendArthurScript, { once: true });
+        existingStylesheet.addEventListener('error', appendArthurScript, { once: true });
+      }
+      return;
+    }
+
+    const stylesheet = document.createElement('link');
+    stylesheet.rel = 'stylesheet';
+    stylesheet.href = 'css/arthur-lite.css?v=sitewide-readonly-v4-aug-2026';
+    stylesheet.dataset.arthurLiteStyle = '';
+    stylesheet.addEventListener('load', appendArthurScript, { once: true });
+    stylesheet.addEventListener('error', appendArthurScript, { once: true });
+    document.head.appendChild(stylesheet);
+  }
+
+  loadArthurLite();
 
   // ========== MOBILE NAVIGATION ==========
   const navToggle = document.querySelector('.nav-toggle');
@@ -1354,13 +1465,13 @@
     const main = document.querySelector('main');
     if (!main) return;
     main.querySelectorAll('img').forEach(function(image) {
-      if (image.closest('.insight-card-media, .insight-detail-media, .ai-image-frame, .ai-search-hero-visual')) return;
+      if (image.closest('.insight-card-media, .homepage-insight-media, .insight-detail-media, .ai-image-frame, .ai-search-hero-visual')) return;
       if (image.classList.contains('logo-img') || image.closest('.logo, [data-no-ai-disclosure]')) return;
 
       let frame = image.parentElement;
       if (!frame) return;
       if (frame.tagName === 'PICTURE') frame = frame.parentElement;
-      if (!frame || frame.closest('.insight-card-media, .insight-detail-media')) return;
+      if (!frame || frame.closest('.insight-card-media, .homepage-insight-media, .insight-detail-media')) return;
 
       const canUseParent = frame.children.length === 1;
       if (!canUseParent) {

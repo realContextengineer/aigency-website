@@ -54,6 +54,8 @@ PUBLIC_RATE_LIMIT_WINDOW_SECONDS = 600
 PUBLIC_RATE_LIMIT_MAX_REQUESTS = 5
 PUBLIC_DAILY_LIMIT = 12
 PUBLIC_NEW_SESSION_DAILY_LIMIT = 2
+ARTICLE50_MAX_REQUEST_BYTES = 2_400
+ARTICLE50_LOCAL_SCAN_URL = os.environ.get("AIGENCY_ARTICLE50_SCAN_URL", "http://127.0.0.1:8797/api/article50-scan")
 SESSION_ID_PATTERN = re.compile(r"^[A-Za-z0-9_-]{8,80}$")
 SESSION_OUTPUT_PATTERN = re.compile(r"^session_id:\s*([A-Za-z0-9_-]+)\s*$", re.MULTILINE)
 VOICE_DIR = ROOT / ".local-voice"
@@ -431,7 +433,11 @@ class AiGENCYHandler(SimpleHTTPRequestHandler):
         super().do_GET()
 
     def do_POST(self) -> None:  # noqa: N802
-        if urlparse(self.path).path != "/api/chat":
+        request_path = urlparse(self.path).path
+        if request_path == "/api/article50-scan":
+            self.proxy_article50_scan()
+            return
+        if request_path != "/api/chat":
             self.send_json(HTTPStatus.NOT_FOUND, {"error": "Not found."})
             return
         if not permitted_request(
@@ -548,6 +554,54 @@ class AiGENCYHandler(SimpleHTTPRequestHandler):
             )
         finally:
             ARTHUR_RUN_LOCK.release()
+
+    def proxy_article50_scan(self) -> None:
+        """Keep the local website on its existing Arthur server while the scanner runs in isolated Node code."""
+        if not permitted_request(
+            self.headers.get("Origin"),
+            self.headers.get("Authorization"),
+            self.headers.get("Host"),
+        ):
+            self.send_json(HTTPStatus.FORBIDDEN, {"error": "This review request is not allowed."})
+            return
+        try:
+            content_length = int(self.headers.get("Content-Length", "0"))
+        except ValueError:
+            content_length = 0
+        if not 0 < content_length <= ARTICLE50_MAX_REQUEST_BYTES:
+            self.send_json(HTTPStatus.BAD_REQUEST, {"error": "That website address could not be read."})
+            return
+
+        try:
+            body = self.rfile.read(content_length)
+            payload = json.loads(body)
+        except (json.JSONDecodeError, UnicodeDecodeError):
+            self.send_json(HTTPStatus.BAD_REQUEST, {"error": "That website address could not be read."})
+            return
+        if not isinstance(payload, dict) or not isinstance(payload.get("url"), str):
+            self.send_json(HTTPStatus.BAD_REQUEST, {"error": "Please enter a public website address."})
+            return
+
+        request = urllib.request.Request(
+            ARTICLE50_LOCAL_SCAN_URL,
+            data=body,
+            headers={"Content-Type": "application/json", "Accept": "application/json"},
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=70) as response:
+                status = HTTPStatus(response.status)
+                result = json.loads(response.read().decode("utf-8"))
+        except urllib.error.HTTPError as error:
+            status = HTTPStatus(error.code)
+            try:
+                result = json.loads(error.read().decode("utf-8"))
+            except (json.JSONDecodeError, UnicodeDecodeError):
+                result = {"error": "The public-surface review could not be completed."}
+        except (OSError, urllib.error.URLError, TimeoutError):
+            self.send_json(HTTPStatus.SERVICE_UNAVAILABLE, {"error": "The local Article 50 scanner is not running."})
+            return
+        self.send_json(status, result if isinstance(result, dict) else {"error": "The scanner returned an invalid response."})
 
 
 class ReusableThreadingHTTPServer(ThreadingHTTPServer):

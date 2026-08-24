@@ -1,0 +1,35 @@
+model:
+  provider: openai-codex
+  default: gpt-5.6-luna
+terminal:
+  cwd: /Users/aigencyltd/.hermes/profiles/archie/workspace
+agent:
+  reasoning_effort: medium
+  # Archie delegates collection to deterministic runners, but needs enough
+  # turns to start a bounded job, inspect its evidence and explain the result.
+  max_turns: 6
+  disabled_toolsets:
+    - browser
+    - code_execution
+    - computer_use
+    - context_engine
+    - cronjob
+    - delegation
+    - discord
+    - discord_admin
+    - file
+    - homeassistant
+    - image_gen
+    - kanban
+    - memory
+    - session_search
+    - spotify
+    - stt
+    - todo
+    - tts
+    - video
+    - video_gen
+    - vision
+    - web
+    - x_search
+    - yuanbao

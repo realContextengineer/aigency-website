@@ -1,0 +1,10 @@
+{
+  "private": true,
+  "scripts": {
+    "article50:dev": "node tools/article50-local-server.mjs",
+    "test:article50": "node --test tests/article50-scan.test.mjs"
+  },
+  "dependencies": {
+    "crawlee": "^3.18.1"
+  }
+}

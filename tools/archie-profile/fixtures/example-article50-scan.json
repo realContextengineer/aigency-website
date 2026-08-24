@@ -1,0 +1,42 @@
+{
+  "scanner": "AiGENCY Article 50 public-surface review",
+  "version": "0.1-local-build",
+  "scanned_at": "2026-08-15T12:00:00.000Z",
+  "target": {
+    "submitted_url": "https://example.org/",
+    "hostname": "example.org"
+  },
+  "scope": {
+    "pages_scanned": 2,
+    "maximum_public_html_pages": 6,
+    "boundary": "Public HTML only. No logins, forms, dashboards, private files, purchases or site changes."
+  },
+  "summary": {
+    "found": 2,
+    "not_found": 1,
+    "confirm": 1
+  },
+  "checks": [
+    {
+      "id": "A50-1.2",
+      "title": "AI disclosure at first interaction",
+      "status": "not_found",
+      "detail": "An interaction-like element was found, but no clear AI disclosure was found in the scanned HTML.",
+      "evidence": {
+        "url": "https://example.org/support",
+        "snippet": "Ask our virtual assistant"
+      },
+      "next_step": "Make any relevant AI disclosure clear before meaningful interaction."
+    },
+    {
+      "id": "A50-4.2",
+      "title": "Editorial responsibility for public-interest text",
+      "status": "confirm",
+      "detail": "Meaningful human review and editorial responsibility cannot be proven by crawling a public website.",
+      "evidence": null,
+      "next_step": "Record the responsible person and the nature of their review where this applies."
+    }
+  ],
+  "warnings": [],
+  "limitation": "This is an evidence-led public-surface review, not legal advice, certification or a compliance determination."
+}

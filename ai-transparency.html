@@ -69,9 +69,9 @@
   } }
   </script>
 
-  <link rel="stylesheet" href="css/style.css?v=talking-avatar-public-v1-aug-2026">
+  <link rel="stylesheet" href="css/style.css?v=talking-avatar-public-v1-aug-2026&article50-scan-entry-v3">
 </head>
-<body class="scan-page">
+<body class="scan-page" data-arthur-mode="quiet">
   <div class="scan-parallax-scene" aria-hidden="true">
     <video autoplay loop muted playsinline preload="metadata">
       <source src="assets/video : logo etc/mp4.webm" type="video/webm">
@@ -97,11 +97,29 @@
     <section class="scan-product-hero" id="website-check" aria-labelledby="transparency-title">
       <div class="scan-product-copy">
         <p class="eyebrow">EU AI ACT · ARTICLE 50 · PUBLIC-SURFACE SCAN</p>
-        <h1 id="transparency-title"><span>COMING SOON</span> Article 50 Site Scan</h1>
-        <p class="scan-product-lede">The public-surface scanner is being prepared. When released, it will check 16 transparency signals: AI interaction disclosures, content marking, human handover and the public evidence around them.</p>
-        <div class="scan-product-signals" aria-label="Planned scan inclusions"><span>16 checks</span><span>60-second crawl</span><span>PDF report</span></div>
-        <div class="scan-product-form scanner-coming-soon-panel" role="status" aria-label="Article 50 Site Scan coming soon"><p class="scanner-coming-soon-kicker">COMING SOON</p><p>You’ll be able to enter a website here when the public-surface scanner is ready.</p></div>
-        <p class="scan-product-note">Public scanner in preparation · human-reviewed audit enquiries welcome</p>
+        <p class="scan-product-release">PUBLIC SCANNER · BETA</p>
+        <h1 id="transparency-title">Article 50 <span>Site Scan</span></h1>
+        <p class="scan-product-lede">Enter a public website for an evidence-led first review of AI interaction disclosures, content marking, human handover and the public signals around them.</p>
+        <div class="scan-product-signals" aria-label="Scan inclusions"><span>16 checks</span><span>up to 6 pages</span><span>evidence report</span></div>
+        <form class="scan-product-form scan-entry-panel" id="article50-scan-form" aria-describedby="scan-entry-safety scan-entry-availability article50-scan-result">
+          <div class="scan-entry-heading">
+            <span class="scan-entry-status"><i aria-hidden="true"></i> YOUR WEBSITE GOES HERE</span>
+            <span class="scan-entry-pointer" aria-hidden="true"><b>↓</b></span>
+          </div>
+          <label for="article50-website">Website address to review</label>
+          <div class="scan-product-input-row">
+            <input id="article50-website" name="url" type="url" inputmode="url" autocomplete="url" placeholder="https://yourwebsite.co.uk" required>
+            <button class="btn-primary btn-bronze" id="article50-scan-submit" type="submit">Run free review</button>
+          </div>
+          <p class="scan-entry-availability" id="scan-entry-availability">The beta checks up to six public HTML pages and returns the evidence in this browser. It does not keep a scan record.</p>
+          <ul class="scan-entry-safety" id="scan-entry-safety" aria-label="What the public scanner will and will not access">
+            <li><span aria-hidden="true">✓</span><strong>Public pages only</strong><small>It reads what a visitor can already see.</small></li>
+            <li><span aria-hidden="true">✓</span><strong>No private access</strong><small>No logins, passwords, dashboards or private files.</small></li>
+            <li><span aria-hidden="true">✓</span><strong>No website changes</strong><small>It does not submit forms, publish, buy or alter anything.</small></li>
+          </ul>
+          <div class="article50-scan-result" id="article50-scan-result" aria-live="polite" hidden></div>
+        </form>
+        <p class="scan-product-note">Beta review · public evidence only · human-reviewed audit enquiries welcome</p>
         <p class="scan-product-coverage">For organisations in <strong>Bournemouth, Poole, Christchurch and across Dorset</strong>—also supporting Hampshire, Wiltshire and Devon. The public-surface scan itself works for any public website.</p>
         <div class="scan-product-actions"><a href="#scan-checks">See the 16 checks</a><a href="#sample-report">View sample report</a></div>
       </div>
@@ -151,6 +169,7 @@
     <p class="footer-meta"><a href="index.html">Return home</a></p>
   </footer>
 
-  <script src="js/main.js?v=talking-avatar-public-v1-aug-2026" defer></script>
+  <script src="js/main.js?v=arthur-lite-sitewide-v3-aug-2026" defer></script>
+  <script src="js/article50-scan.js?v=article50-scanner-local-v2" defer></script>
 </body>
 </html>

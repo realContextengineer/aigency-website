@@ -1,0 +1,79 @@
+{
+  "registry_version": "2026-08-15",
+  "purpose": "Primary and standards-body sources Archie may archive and retrieve when analysing Article 50 public evidence.",
+  "allowed_hosts": [
+    "eur-lex.europa.eu",
+    "digital-strategy.ec.europa.eu",
+    "ec.europa.eu",
+    "ai-act-service-desk.ec.europa.eu",
+    "spec.c2pa.org",
+    "cv.iptc.org",
+    "www.w3.org"
+  ],
+  "sources": [
+    {
+      "id": "eu-ai-act-article-50",
+      "title": "Article 50: Transparency obligations for providers and deployers of certain AI systems",
+      "publisher": "European Commission — AI Act Service Desk (linked to EUR-Lex official text)",
+      "url": "https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-50",
+      "version": "Article 50 reference page; page links the EUR-Lex official text",
+      "authority_level": "official-law-reference"
+    },
+    {
+      "id": "ec-article-50-guidelines-2026",
+      "title": "Guidelines on the implementation of transparency obligations under Article 50",
+      "publisher": "European Commission",
+      "url": "https://ec.europa.eu/newsroom/dae/redirection/document/131215",
+      "version": "Published 20 July 2026",
+      "authority_level": "official-guidance"
+    },
+    {
+      "id": "ec-article-50-questions-2026",
+      "title": "Transparency obligations under Article 50 of the AI Act — Questions and answers",
+      "publisher": "European Commission",
+      "url": "https://digital-strategy.ec.europa.eu/en/faqs/transparency-obligations-under-article-50-ai-act",
+      "version": "Last checked 24 July 2026",
+      "authority_level": "official-guidance"
+    },
+    {
+      "id": "ec-transparency-code-2026",
+      "title": "Code of Practice on Transparency of AI-generated Content",
+      "publisher": "European Commission / AI Office",
+      "url": "https://ec.europa.eu/newsroom/dae/redirection/document/129555",
+      "version": "Published June 2026",
+      "authority_level": "official-code"
+    },
+    {
+      "id": "ec-ai-content-icons-2026",
+      "title": "EU Icons for labelling AI-generated content",
+      "publisher": "European Commission / AI Office",
+      "url": "https://digital-strategy.ec.europa.eu/en/policies/eu-icons-labelling-ai-generated-content",
+      "version": "Last checked 10 August 2026",
+      "authority_level": "official-guidance"
+    },
+    {
+      "id": "c2pa-content-credentials-2-4",
+      "title": "Content Credentials — C2PA Technical Specification 2.4",
+      "publisher": "Coalition for Content Provenance and Authenticity",
+      "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+      "version": "2.4",
+      "authority_level": "technical-standard"
+    },
+    {
+      "id": "iptc-digital-source-type",
+      "title": "IPTC Digital Source Type controlled vocabulary",
+      "publisher": "International Press Telecommunications Council",
+      "url": "https://cv.iptc.org/newscodes/digitalsourcetype",
+      "version": "Controlled vocabulary",
+      "authority_level": "technical-standard"
+    },
+    {
+      "id": "w3c-wcag-2-2-labels",
+      "title": "WCAG 2.2 — Labels or Instructions",
+      "publisher": "World Wide Web Consortium",
+      "url": "https://www.w3.org/WAI/WCAG22/Understanding/labels-or-instructions.html",
+      "version": "WCAG 2.2",
+      "authority_level": "technical-standard"
+    }
+  ]
+}

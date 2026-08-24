@@ -1,0 +1,452 @@
+.arthur-lite {
+  --arthur-ink: #0b0f18;
+  --arthur-panel: rgba(13, 18, 29, 0.98);
+  --arthur-panel-soft: rgba(255, 255, 255, 0.045);
+  --arthur-rule: rgba(218, 184, 133, 0.22);
+  --arthur-brass: #d8b57f;
+  --arthur-paper: #f3eee6;
+  --arthur-muted: #aaa9a8;
+  position: fixed;
+  z-index: 2500;
+  bottom: max(1.1rem, env(safe-area-inset-bottom));
+  left: max(1.1rem, env(safe-area-inset-left));
+  color-scheme: dark;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  pointer-events: none;
+}
+
+.arthur-lite *,
+.arthur-lite *::before,
+.arthur-lite *::after {
+  box-sizing: border-box;
+}
+
+.arthur-lite__trigger,
+.arthur-lite__panel {
+  pointer-events: auto;
+}
+
+.arthur-lite__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-height: 3.25rem;
+  margin: 0;
+  border: 1px solid rgba(216, 181, 127, 0.34);
+  border-radius: 999px;
+  padding: 0.28rem 0.9rem 0.28rem 0.28rem;
+  background: rgba(9, 14, 23, 0.94);
+  color: var(--arthur-paper);
+  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.32);
+  font: inherit;
+  cursor: pointer;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.arthur-lite__trigger:hover,
+.arthur-lite__trigger:focus-visible,
+.arthur-lite__trigger.is-open {
+  border-color: rgba(216, 181, 127, 0.72);
+  background: rgba(18, 24, 36, 0.98);
+}
+
+.arthur-lite__trigger:focus-visible,
+.arthur-lite__close:focus-visible,
+.arthur-lite__composer input:focus-visible,
+.arthur-lite__composer button:focus-visible,
+.arthur-lite__human:focus-visible {
+  outline: 2px solid #f0c987;
+  outline-offset: 3px;
+}
+
+.arthur-lite__mark {
+  display: grid;
+  width: 2.65rem;
+  height: 2.65rem;
+  flex: 0 0 2.65rem;
+  place-items: center;
+  border: 1px solid rgba(115, 186, 156, 0.45);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 28%, rgba(128, 205, 171, 0.35), rgba(31, 91, 73, 0.38) 48%, rgba(8, 26, 25, 0.96));
+  color: #d4e9df;
+  font-family: "Space Grotesk", Inter, sans-serif;
+  font-size: 0.94rem;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  box-shadow: inset 0 0 18px rgba(120, 209, 169, 0.12);
+}
+
+.arthur-lite__trigger-label {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.64rem;
+  font-weight: 600;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.arthur-lite__trigger-label small {
+  color: var(--arthur-brass);
+  font: inherit;
+}
+
+.arthur-lite--quiet .arthur-lite__trigger {
+  padding-right: 0.28rem;
+}
+
+.arthur-lite--quiet .arthur-lite__trigger-label {
+  display: none;
+}
+
+.arthur-lite__panel {
+  position: absolute;
+  bottom: calc(100% + 0.75rem);
+  left: 0;
+  width: min(26rem, calc(100vw - 2.2rem));
+  max-height: min(42rem, calc(100vh - 6.5rem));
+  overflow: hidden;
+  border: 1px solid var(--arthur-rule);
+  border-radius: 1.1rem;
+  background: var(--arthur-panel);
+  color: var(--arthur-paper);
+  box-shadow: 0 26px 75px rgba(0, 0, 0, 0.52);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+.arthur-lite__panel[hidden] {
+  display: none;
+}
+
+.arthur-lite__panel.is-opening {
+  animation: arthurLiteOpen 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.arthur-lite__panel.is-closing {
+  animation: arthurLiteClose 200ms ease both;
+}
+
+@keyframes arthurLiteOpen {
+  from { opacity: 0; transform: translateY(0.7rem) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes arthurLiteClose {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to { opacity: 0; transform: translateY(0.45rem) scale(0.985); }
+}
+
+.arthur-lite__header {
+  display: grid;
+  grid-template-columns: 4.3rem 1fr auto;
+  align-items: center;
+  min-height: 5.25rem;
+  border-bottom: 1px solid var(--arthur-rule);
+  background: linear-gradient(135deg, rgba(216, 181, 127, 0.09), transparent 62%);
+}
+
+.arthur-lite__portrait {
+  position: relative;
+  align-self: stretch;
+  min-height: 5.25rem;
+  overflow: hidden;
+  border-right: 1px solid var(--arthur-rule);
+  background: #0b1018;
+}
+
+.arthur-lite__portrait img,
+.arthur-lite__portrait canvas {
+  position: absolute;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+}
+
+.arthur-lite__portrait canvas {
+  transform: scale(1.08);
+  transform-origin: 50% 44%;
+}
+
+.arthur-lite__portrait.is-avatar-ready img,
+.arthur-lite__portrait.is-avatar-ready .arthur-lite__avatar-loading {
+  opacity: 0;
+}
+
+.arthur-lite__avatar-loading {
+  position: absolute;
+  inset: auto 0 0;
+  padding: 0.3rem;
+  background: rgba(4, 8, 13, 0.8);
+  color: var(--arthur-muted);
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.47rem;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.arthur-lite__portrait.is-avatar-unavailable .arthur-lite__avatar-loading {
+  display: none;
+}
+
+.arthur-lite__identity {
+  min-width: 0;
+  padding: 0.85rem 0.95rem;
+}
+
+.arthur-lite__identity p {
+  margin: 0 0 0.24rem;
+  color: var(--arthur-brass);
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.52rem;
+  font-weight: 600;
+  letter-spacing: 0.11em;
+}
+
+.arthur-lite__identity h2 {
+  margin: 0;
+  color: var(--arthur-paper);
+  font-family: "Space Grotesk", Inter, sans-serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+.arthur-lite__close {
+  width: 2.25rem;
+  height: 2.25rem;
+  margin-right: 0.75rem;
+  border: 1px solid var(--arthur-rule);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--arthur-paper);
+  font: 300 1.35rem/1 Inter, sans-serif;
+  cursor: pointer;
+}
+
+.arthur-lite__close:hover {
+  border-color: rgba(216, 181, 127, 0.72);
+  background: rgba(216, 181, 127, 0.08);
+}
+
+.arthur-lite__boundary {
+  margin: 0;
+  border-bottom: 1px solid var(--arthur-rule);
+  padding: 0.7rem 1rem;
+  background: rgba(216, 181, 127, 0.055);
+  color: var(--arthur-muted);
+  font-size: 0.72rem;
+  line-height: 1.45;
+}
+
+.arthur-lite__messages {
+  display: flex;
+  min-height: 8.5rem;
+  max-height: min(17rem, 34vh);
+  flex-direction: column;
+  gap: 0.6rem;
+  overflow-y: auto;
+  padding: 1rem;
+  scrollbar-color: rgba(216, 181, 127, 0.35) transparent;
+}
+
+.arthur-lite__message {
+  max-width: 88%;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.8rem 0.8rem 0.8rem 0.18rem;
+  padding: 0.72rem 0.8rem;
+  background: var(--arthur-panel-soft);
+}
+
+.arthur-lite__message p {
+  margin: 0;
+  color: #dedbd5;
+  font-size: 0.82rem;
+  line-height: 1.55;
+}
+
+.arthur-lite__message--visitor {
+  align-self: flex-end;
+  border-color: rgba(216, 181, 127, 0.25);
+  border-radius: 0.8rem 0.8rem 0.18rem 0.8rem;
+  background: rgba(216, 181, 127, 0.1);
+}
+
+.arthur-lite__message--status p {
+  color: var(--arthur-muted);
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.04em;
+}
+
+.arthur-lite__composer {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.5rem;
+  margin: 0;
+  border-top: 1px solid var(--arthur-rule);
+  padding: 0.75rem;
+}
+
+.arthur-lite__composer input {
+  min-width: 0;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 0.65rem;
+  padding: 0.75rem 0.8rem;
+  background: rgba(255, 255, 255, 0.045);
+  color: var(--arthur-paper);
+  font: 0.82rem/1.3 Inter, sans-serif;
+}
+
+.arthur-lite__composer input::placeholder {
+  color: #838484;
+}
+
+.arthur-lite__composer button {
+  display: grid;
+  width: 2.75rem;
+  border: 1px solid rgba(216, 181, 127, 0.48);
+  border-radius: 0.65rem;
+  place-items: center;
+  background: rgba(216, 181, 127, 0.12);
+  color: var(--arthur-brass);
+  font: 600 1rem/1 Inter, sans-serif;
+  cursor: pointer;
+}
+
+.arthur-lite__composer button:hover {
+  background: rgba(216, 181, 127, 0.2);
+}
+
+.arthur-lite__composer input:disabled,
+.arthur-lite__composer button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.arthur-lite__human {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid var(--arthur-rule);
+  padding: 0.68rem 1rem;
+  color: var(--arthur-brass);
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.61rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.arthur-lite__human:hover {
+  background: rgba(216, 181, 127, 0.06);
+}
+
+.arthur-lite__sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  .arthur-lite {
+    bottom: max(0.75rem, env(safe-area-inset-bottom));
+    left: max(0.75rem, env(safe-area-inset-left));
+  }
+
+  .arthur-lite__trigger {
+    padding-right: 0.28rem;
+  }
+
+  .arthur-lite__trigger-label {
+    display: none;
+  }
+
+  .arthur-lite__panel {
+    width: calc(100vw - 1.5rem);
+    max-height: calc(100vh - 5.6rem - env(safe-area-inset-bottom));
+  }
+
+  .arthur-lite__messages {
+    max-height: 32vh;
+  }
+}
+
+/* When the main navigation collapses, Arthur becomes its matching left-hand
+   control. Keeping the launcher in the header prevents it dropping back to
+   the lower-left corner on every other page. */
+@media (max-width: 1120px) {
+  .arthur-lite {
+    top: calc((var(--header-height) - 3.5rem) / 2 + 3px);
+    bottom: auto;
+    left: max(1.5rem, env(safe-area-inset-left));
+  }
+
+  .arthur-lite__trigger {
+    display: grid;
+    width: 3.5rem;
+    min-width: 3.5rem;
+    height: 3.5rem;
+    min-height: 3.5rem;
+    padding: 0;
+    border-color: rgba(225, 132, 137, 0.46);
+    border-radius: 1.15rem;
+    background: linear-gradient(135deg, rgba(151, 42, 57, 0.4), rgba(72, 17, 31, 0.55) 52%, rgba(31, 22, 36, 0.62));
+    box-shadow: inset 0 1px 0 rgba(255, 231, 229, 0.22), inset 0 -12px 22px rgba(27, 6, 16, 0.26), inset 0 0 0 1px rgba(255, 207, 205, 0.05), 0 12px 28px rgba(0, 0, 0, 0.24), 0 0 0.75rem rgba(169, 23, 43, 0.12);
+    opacity: 0;
+    animation: headerControlIconReveal 280ms ease-out 780ms both;
+  }
+
+  .arthur-lite__trigger:hover,
+  .arthur-lite__trigger:focus-visible,
+  .arthur-lite__trigger.is-open {
+    border-color: rgba(238, 151, 157, 0.64);
+    background: linear-gradient(135deg, rgba(167, 47, 65, 0.54), rgba(81, 19, 35, 0.68) 52%, rgba(37, 24, 40, 0.72));
+    box-shadow: inset 0 1px 0 rgba(255, 238, 235, 0.28), inset 0 -8px 14px rgba(27, 6, 16, 0.22), 0 0.75rem 1.55rem rgba(0, 0, 0, 0.24);
+  }
+
+  .arthur-lite__mark {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    border-radius: inherit;
+    background: transparent;
+    color: var(--arthur-brass);
+    font-family: "Space Grotesk", Inter, sans-serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: -0.08em;
+    text-shadow: 0 1px 0 rgba(255, 237, 196, 0.22), 0 0 0.65rem rgba(216, 181, 127, 0.2);
+    box-shadow: none;
+  }
+
+  .arthur-lite__trigger-label {
+    display: none;
+  }
+
+  .arthur-lite__panel {
+    top: calc(var(--header-height) + 0.7rem);
+    bottom: auto;
+    left: 0;
+    max-height: calc(100vh - var(--header-height) - 1.5rem);
+  }
+}
+
+@media (max-width: 560px) {
+  .arthur-lite {
+    left: max(0.75rem, env(safe-area-inset-left));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arthur-lite__panel.is-opening,
+  .arthur-lite__panel.is-closing {
+    animation-duration: 1ms;
+  }
+}
