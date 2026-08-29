@@ -1,29 +1,11 @@
 {
-  "name": "AEO Expert Agent",
-  "description": "Evidence-led AI search audit interface and sample artifact producer.",
-  "version": "0.2.0",
-  "protocol": "A2A 1.0",
-  "transport": "HTTP+JSON",
-  "demo": true,
-  "authentication": "none",
-  "capabilities": {
-    "sampleAudit": true,
-    "liveCrawler": false,
-    "externalResearch": false,
-    "humanReviewRequired": true
-  },
-  "skills": [
-    "audit_website",
-    "analyse_seo",
-    "analyse_aeo",
-    "analyse_geo",
-    "deep_research_domain",
-    "prioritise_recommendations"
-  ],
-  "artifact": {
-    "mediaType": "application/json",
-    "schema": "aeo_expert.audit",
-    "schemaVersion": "0.2.0",
-    "evidenceRequired": true
-  }
+  "name": "AEO Expert static demo contract",
+  "version": "0.1",
+  "status": "static_demo_only",
+  "description": "A public documentation card for the AEO Expert design demonstration. It is not a live A2A service and accepts no remote tasks.",
+  "url": "https://aigency.ltd/demos/09-ai-search-geo-audit/",
+  "taskEndpoint": null,
+  "authentication": "No authentication because no remote task endpoint exists.",
+  "simulatedSkills": ["audit_website", "analyse_seo", "analyse_aeo", "analyse_geo", "prioritise_recommendations"],
+  "boundaries": ["Demo evidence only", "No account access", "No external changes"]
 }

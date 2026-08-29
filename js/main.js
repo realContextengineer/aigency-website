@@ -123,10 +123,10 @@
     { slug: 'legacy-gdpr', href: '/blog-gdpr-ai-workflows.html', title: 'Is your team leaking customer records?', excerpt: 'GDPR-aware habits for using AI tools without exposing unnecessary customer information.', category_slug: 'ai-workflows', published_at: '2026-07-16T00:00:00Z' },
     { slug: 'legacy-content', href: '/blog-ai-content-search.html', title: 'Why commodity AI content fails.', excerpt: 'Why useful experience and clear authorship matter more than generic output.', category_slug: 'ai-search', published_at: '2026-07-09T00:00:00Z' },
     { slug: 'legacy-web-readiness', href: '/blog-ai-agent-web-readiness.html', title: 'Bots, AI agents and your website.', excerpt: 'What automated traffic means for structured content, accessible forms and a clear robots policy.', category_slug: 'ai-search', published_at: '2026-06-25T00:00:00Z' },
-    { slug: 'legacy-less-ai', href: '/blog-chatgpt-business.html', title: 'Why your small business needs less AI.', excerpt: 'A practical starting point for choosing useful AI over noise.', category_slug: 'human-centred-ai', published_at: '2026-05-28T00:00:00Z' },
-    { slug: 'legacy-bournemouth', href: '/blog-small-business-bournemouth.html', title: 'How AI can help small businesses in Bournemouth.', excerpt: 'Practical opportunities for local businesses without losing the human part.', category_slug: 'ai-workflows', published_at: '2026-05-14T00:00:00Z' },
-    { slug: 'legacy-oversight', href: '/blog-human-oversight.html', title: 'Human in the loop: why oversight keeps AI human.', excerpt: 'The role of review, judgement and accountability in useful AI systems.', category_slug: 'human-centred-ai', published_at: '2026-04-30T00:00:00Z' },
-    { slug: 'legacy-ethical-agents', href: '/blog-ethical-agents.html', title: 'Ethical AI agents: workflows that respect people.', excerpt: 'How to design agent workflows with practical human boundaries.', category_slug: 'human-centred-ai', published_at: '2026-04-16T00:00:00Z' }
+    { slug: 'legacy-less-ai', href: '/blog-chatgpt-business.html', title: 'Why your small business needs less AI.', excerpt: 'A practical starting point for choosing useful AI over noise.', category_slug: 'human-centred-ai', published_at: '2026-07-25T00:00:00Z' },
+    { slug: 'legacy-bournemouth', href: '/blog-small-business-bournemouth.html', title: 'How AI can help small businesses in Bournemouth.', excerpt: 'Practical opportunities for local businesses without losing the human part.', category_slug: 'ai-workflows', published_at: '2025-10-20T00:00:00Z' },
+    { slug: 'legacy-oversight', href: '/blog-human-oversight.html', title: 'Human in the loop: why oversight keeps AI human.', excerpt: 'The role of review, judgement and accountability in useful AI systems.', category_slug: 'human-centred-ai', published_at: '2025-10-21T00:00:00Z' },
+    { slug: 'legacy-ethical-agents', href: '/blog-ethical-agents.html', title: 'Ethical AI agents: workflows that respect people.', category_slug: 'human-centred-ai', published_at: '2025-10-16T00:00:00Z', excerpt: 'How to design agent workflows with practical human boundaries.' }
   ];
 
   function insightCategoryLabel(slug) {
@@ -345,6 +345,49 @@
     } catch (error) {
       return null;
     }
+  }
+
+  function setHeadMeta(selector, attributes, content) {
+    let element = document.head.querySelector(selector);
+    if (!element) {
+      element = document.createElement('meta');
+      Object.keys(attributes).forEach(function(name) {
+        element.setAttribute(name, attributes[name]);
+      });
+      document.head.appendChild(element);
+    }
+    element.setAttribute('content', content);
+  }
+
+  function renderInsightArticleSchema(post, canonicalUrl, imageUrl) {
+    const existing = document.getElementById('insight-article-schema');
+    if (existing) existing.remove();
+    const sources = Array.isArray(post && post.sources) ? post.sources : [];
+    const citations = sources.map(function(source) {
+      return safeExternalUrl(source && source.url);
+    }).filter(Boolean);
+    const author = { '@type': 'Person', name: post.author_name || 'AiGENCY Ltd' };
+    const authorUrl = safeExternalUrl(post.author_url);
+    if (authorUrl) author.sameAs = authorUrl;
+    const schema = {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: post.title || 'AI insight',
+      description: post.meta_description || post.excerpt || post.title || 'AI insight',
+      mainEntityOfPage: { '@type': 'WebPage', '@id': canonicalUrl },
+      url: canonicalUrl,
+      author: author,
+      publisher: { '@type': 'Organization', name: 'AiGENCY Ltd', url: 'https://aigency.ltd/' },
+      citation: citations
+    };
+    if (post.published_at) schema.datePublished = post.published_at;
+    if (post.updated_at || post.published_at) schema.dateModified = post.updated_at || post.published_at;
+    if (imageUrl) schema.image = imageUrl;
+    const script = document.createElement('script');
+    script.id = 'insight-article-schema';
+    script.type = 'application/ld+json';
+    script.textContent = JSON.stringify(schema).replace(/</g, '\\u003c');
+    document.head.appendChild(script);
   }
 
   function renderPreviousInsights(posts, currentPost) {
@@ -870,11 +913,24 @@
     mountInsightAudio();
     mountInsightChat(post);
     detailSection.hidden = false;
-    document.title = (post.seo_title || post.title || 'AI insight') + ' | AiGENCY Ltd';
+    const canonicalUrl = safeExternalUrl(post.canonical_url) || (post.slug ? 'https://aigency.ltd/insights/' + encodeURIComponent(post.slug) + '/' : 'https://aigency.ltd/insights.html');
+    const pageTitle = post.seo_title || post.title || 'AI insight';
+    const pageDescription = post.meta_description || post.excerpt || 'AiGENCY Insight';
+    document.title = pageTitle;
     const description = document.querySelector('meta[name="description"]');
-    if (description) description.setAttribute('content', post.seo_description || post.excerpt || 'AiGENCY Insight');
+    if (description) description.setAttribute('content', pageDescription);
     const canonical = document.querySelector('link[rel="canonical"]');
-    if (canonical && post.slug) canonical.setAttribute('href', 'https://aigency.ltd/insights/' + encodeURIComponent(post.slug) + '/');
+    if (canonical) canonical.setAttribute('href', canonicalUrl);
+    setHeadMeta('meta[property="og:title"]', { property: 'og:title' }, pageTitle);
+    setHeadMeta('meta[property="og:description"]', { property: 'og:description' }, pageDescription);
+    setHeadMeta('meta[property="og:url"]', { property: 'og:url' }, canonicalUrl);
+    setHeadMeta('meta[name="twitter:title"]', { name: 'twitter:title' }, pageTitle);
+    setHeadMeta('meta[name="twitter:description"]', { name: 'twitter:description' }, pageDescription);
+    if (imageUrl) {
+      setHeadMeta('meta[property="og:image"]', { property: 'og:image' }, imageUrl);
+      setHeadMeta('meta[name="twitter:image"]', { name: 'twitter:image' }, imageUrl);
+    }
+    renderInsightArticleSchema(post, canonicalUrl, imageUrl);
   }
 
   function renderInsightDetailError() {
@@ -1989,54 +2045,6 @@
     });
   }
 
-  // ========== CONTACT SUBMISSION ==========
-  // Store the enquiry in Supabase. The database trigger places a protected
-  // notification in the email outbox; the mail provider can be enabled later.
-  const contactForm = document.getElementById('contact-form');
-  if (contactForm) {
-    contactForm.addEventListener('submit', function(event) {
-      event.preventDefault();
-      const formData = new FormData(contactForm);
-      const name = String(formData.get('name') || '').trim();
-      const email = String(formData.get('email') || '').trim();
-      const service = String(formData.get('service') || '').trim();
-      const message = String(formData.get('message') || '').trim();
-      const subject = service ? 'AiGENCY enquiry — ' + service : 'AiGENCY website enquiry';
-      const body = [
-        'Name: ' + name,
-        'Email: ' + email,
-        service ? 'Service: ' + service : '',
-        '',
-        message
-      ].filter(Boolean).join('\n');
-      const submitButton = contactForm.querySelector('button[type="submit"]');
-      const note = document.getElementById('contact-form-note');
-      if (submitButton) {
-        submitButton.disabled = true;
-        submitButton.textContent = 'Sending…';
-      }
-      supabaseInsert('contact_submissions', {
-        name: name,
-        email: email,
-        service: service || null,
-        message: message,
-        source_path: window.location.pathname + window.location.search,
-        consent_to_reply: true
-      }).then(function() {
-        contactForm.reset();
-        if (note) note.textContent = 'Your message has been saved. We will reply as soon as the email connection is active.';
-        if (submitButton) submitButton.textContent = 'Message saved';
-      }).catch(function() {
-        if (note) note.textContent = 'The online inbox was unavailable, so an email draft will open instead.';
-        window.location.href = 'mailto:sync@aigency.ltd?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
-        if (submitButton) {
-          submitButton.disabled = false;
-          submitButton.textContent = 'Open email draft';
-        }
-      });
-    });
-  }
-
   // ========== COOKIE CONSENT ==========
   const cookieBar = document.getElementById('cookie-bar');
   const cookieAccept = document.getElementById('cookie-accept');
@@ -2124,6 +2132,10 @@
     const portfolioStatus = portfolioCarousel.querySelector('[data-portfolio-status]');
     const portfolioBillboard = portfolioCarousel.querySelector('[data-portfolio-billboard]');
     const soundToggle = document.querySelector('.portfolio-sound-toggle');
+    const portfolioDemoWindow = document.getElementById('portfolio-demo-window');
+    const portfolioDemoFrame = portfolioDemoWindow?.querySelector('[data-portfolio-demo-frame]');
+    const portfolioDemoTitle = portfolioDemoWindow?.querySelector('#portfolio-demo-title');
+    const portfolioDemoClose = portfolioDemoWindow?.querySelector('[data-portfolio-demo-close]');
     const reducedPortfolioMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let activePortfolioTile = 0;
     let pointerStartX = null;
@@ -2131,6 +2143,42 @@
     let portfolioSoundEnabled = false;
     let portfolioAudioContext = null;
     let turnTimer = null;
+    let portfolioDemoReturnFocus = null;
+
+    portfolioTiles.forEach(function(tile) {
+      tile.removeAttribute('target');
+      tile.removeAttribute('rel');
+      const label = tile.getAttribute('aria-label');
+      if (label) tile.setAttribute('aria-label', label.replace('in a new window', 'in a demo window'));
+    });
+
+    function closePortfolioDemo() {
+      if (!portfolioDemoWindow || portfolioDemoWindow.hidden) return;
+      portfolioDemoWindow.hidden = true;
+      portfolioDemoWindow.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('portfolio-demo-open');
+      if (portfolioDemoFrame) portfolioDemoFrame.src = 'about:blank';
+      portfolioDemoReturnFocus?.focus();
+      portfolioDemoReturnFocus = null;
+    }
+
+    function openPortfolioDemo(tile) {
+      const demoUrl = new URL(tile.href, window.location.href);
+      const demoSlug = demoUrl.searchParams.get('demo');
+      if (!portfolioDemoWindow || !portfolioDemoFrame || !demoSlug) {
+        window.location.assign(tile.href);
+        return;
+      }
+      const demoTitle = tile.querySelector('.portfolio-tile-title')?.textContent.trim() || 'Design demo';
+      portfolioDemoReturnFocus = tile;
+      portfolioDemoTitle.textContent = demoTitle;
+      portfolioDemoFrame.title = demoTitle;
+      portfolioDemoFrame.src = 'demos/' + encodeURIComponent(demoSlug) + '/';
+      portfolioDemoWindow.hidden = false;
+      portfolioDemoWindow.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('portfolio-demo-open');
+      portfolioDemoClose?.focus();
+    }
 
     function portfolioPosition(index) {
       const distance = (index - activePortfolioTile + portfolioTiles.length) % portfolioTiles.length;
@@ -2223,12 +2271,7 @@
         const distance = (index - activePortfolioTile + portfolioTiles.length) % portfolioTiles.length;
         if (distance === 0) {
           event.preventDefault();
-          const preview = window.open(
-            tile.href,
-            'aigencyDesignDemo',
-            'popup=yes,width=1280,height=820,menubar=no,toolbar=no,location=no,status=no,resizable=yes,scrollbars=yes'
-          );
-          if (!preview) window.location.assign(tile.href);
+          openPortfolioDemo(tile);
           return;
         }
         event.preventDefault();
@@ -2251,6 +2294,14 @@
         event.preventDefault();
         turnPortfolioWheel(-1);
       }
+    });
+
+    portfolioDemoClose?.addEventListener('click', closePortfolioDemo);
+    portfolioDemoWindow?.addEventListener('click', function(event) {
+      if (event.target === portfolioDemoWindow) closePortfolioDemo();
+    });
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape' && !portfolioDemoWindow?.hidden) closePortfolioDemo();
     });
 
     if (soundToggle) {

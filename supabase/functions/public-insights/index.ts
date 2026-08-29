@@ -27,6 +27,28 @@ type InsightPost = {
   tile_colour: string | null;
 };
 
+type LegacyArticle = {
+  href: string;
+  title: string;
+  excerpt: string;
+  publishedAt: string;
+  category: string;
+};
+
+// These predate the Supabase publishing collection. They remain standalone
+// canonical articles and stay visible in the server-rendered archive.
+const legacyArticles: LegacyArticle[] = [
+  { href: "/blog-us-uk-ai-governance.html", title: "America's AI governance sneeze.", excerpt: "What US developments in agent security, AI standards and enforcement could mean for UK businesses.", publishedAt: "2026-08-04T00:00:00Z", category: "ai-governance" },
+  { href: "/blog-chatgpt-business.html", title: "Why your small business needs less AI.", excerpt: "A practical starting point for choosing useful AI over noise.", publishedAt: "2026-07-25T00:00:00Z", category: "human-centred-ai" },
+  { href: "/blog-ai-act-chatbots.html", title: "Are your chatbots legal?", excerpt: "What UK businesses should understand about AI disclosures and customer-facing assistants.", publishedAt: "2026-07-23T00:00:00Z", category: "ai-governance" },
+  { href: "/blog-gdpr-ai-workflows.html", title: "Is your team leaking customer records?", excerpt: "GDPR-aware habits for using AI tools without exposing unnecessary customer information.", publishedAt: "2026-07-16T00:00:00Z", category: "ai-workflows" },
+  { href: "/blog-ai-content-search.html", title: "Why commodity AI content fails.", excerpt: "Why useful experience and clear authorship matter more than generic output.", publishedAt: "2026-07-09T00:00:00Z", category: "ai-search" },
+  { href: "/blog-ai-agent-web-readiness.html", title: "Bots, AI agents and your website.", excerpt: "What automated traffic means for structured content, accessible forms and a clear robots policy.", publishedAt: "2026-06-25T00:00:00Z", category: "ai-search" },
+  { href: "/blog-human-oversight.html", title: "Human in the loop: why oversight keeps AI human.", excerpt: "The role of review, judgement and accountability in useful AI systems.", publishedAt: "2025-10-21T00:00:00Z", category: "human-centred-ai" },
+  { href: "/blog-small-business-bournemouth.html", title: "How AI can help small businesses in Bournemouth.", excerpt: "Practical opportunities for local businesses without losing the human part.", publishedAt: "2025-10-20T00:00:00Z", category: "ai-workflows" },
+  { href: "/blog-ethical-agents.html", title: "Ethical AI agents: workflows that respect people.", excerpt: "How to design agent workflows with practical human boundaries.", publishedAt: "2025-10-16T00:00:00Z", category: "human-centred-ai" }
+];
+
 function escapeHtml(value: unknown) {
   return String(value ?? "")
     .replace(/&/g, "&amp;")
@@ -64,7 +86,11 @@ function coverImageHtml(post: InsightPost, className: string) {
   const image = safeUrl(post.cover_image_path);
   if (!image) return "";
   const alt = post.cover_image_alt || post.title || "";
-  return `<img class="${className}" src="${escapeHtml(image)}" alt="${escapeHtml(alt)}">`;
+  const disclosure = post.ai_image_disclosure || "AI-generated image";
+  const mediaClass = className === "insight-detail-image"
+    ? "insight-detail-media ai-image-frame"
+    : "insight-card-media ai-image-frame";
+  return `<div class="${mediaClass}"><img class="${className}" src="${escapeHtml(image)}" alt="${escapeHtml(alt)}"><span class="insight-image-disclosure">${escapeHtml(disclosure)}</span></div>`;
 }
 
 function toDate(value: string | null) {
@@ -244,7 +270,9 @@ function archivePage(posts: InsightPost[], page: number, count: number) {
   const next = page < pages ? `<a class="btn-primary btn-bronze" href="${siteUrl}/insights/archive/?page=${page + 1}">Older posts</a>` : "";
   const canonical = `${siteUrl}/insights/archive/${page > 1 ? `?page=${page}` : ""}`;
   const schema = { "@context": "https://schema.org", "@type": "CollectionPage", name: "AiGENCY Insights archive", url: canonical, isPartOf: { "@type": "WebSite", name: "AiGENCY Ltd", url: siteUrl } };
-  const body = `${siteHeader()}<main class="main" role="main"><div class="page-intro"><p class="eyebrow">AI INSIGHTS ARCHIVE</p><h1>Research and practical guidance.</h1><p class="subtitle">Every published AiGENCY Insight, with evidence sources and clear routes into the full article.</p></div><section class="bento-grid resources-grid" aria-label="Insights archive">${cards || '<article class="bento-card span-12 bronze-theme"><h2>No published Insights yet.</h2><p>The archive will appear here as soon as the first article is published.</p></article>'}</section>${previous || next ? `<nav class="archive-pagination" aria-label="Archive pages">${previous}${next}</nav>` : ""}</main>${siteFooter()}`;
+  const legacyCards = legacyArticles.map((article) => `<article class="bento-card span-6 warm-theme insight-card"><div class="insight-card-body"><p class="eyebrow">${escapeHtml(`${dateLabel(article.publishedAt)} · ${categoryLabel(article.category)}`)}</p><h2>${escapeHtml(article.title)}</h2><p>${escapeHtml(article.excerpt)}</p><a href="${escapeHtml(article.href)}" class="btn-primary btn-bronze">Read the article</a></div></article>`).join("");
+  const legacySection = page === 1 ? `<section class="insights-legacy-section" aria-labelledby="legacy-articles-title"><div class="page-intro"><p class="eyebrow">EARLIER PUBLISHED ARTICLES</p><h2 id="legacy-articles-title">The original AiGENCY library.</h2><p class="subtitle">These remain separate, canonical articles while the newer collection is published through the Insights system.</p></div><div class="bento-grid resources-grid">${legacyCards}</div></section>` : "";
+  const body = `${siteHeader()}<main class="main" role="main"><div class="page-intro"><p class="eyebrow">AI INSIGHTS ARCHIVE</p><h1>Research and practical guidance.</h1><p class="subtitle">Every published AiGENCY Insight, with evidence sources and clear routes into the full article.</p></div><section class="bento-grid resources-grid" aria-label="Insights archive">${cards || '<article class="bento-card span-12 bronze-theme"><h2>No published Insights yet.</h2><p>The archive will appear here as soon as the first article is published.</p></article>'}</section>${previous || next ? `<nav class="archive-pagination" aria-label="Archive pages">${previous}${next}</nav>` : ""}${legacySection}</main>${siteFooter()}`;
   return documentShell({ title: "AI Insights Archive | AiGENCY Ltd", description: "Browse practical AI, SEO, AEO and GEO research from AiGENCY Ltd.", canonical, image: defaultImage, type: "website", schema, body });
 }
 

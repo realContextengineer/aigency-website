@@ -1,8 +1,8 @@
 /api/chat  /.netlify/functions/chat  200
 /api/voice/*  /.netlify/functions/voice  200
 /blog.html  /insights.html  301
-/insights/archive/  /insights.html  301
+/insights/archive/  https://wewucfgrtxpolxlxmitq.supabase.co/functions/v1/public-insights/archive  200
 /insights/archive   /insights/archive/  301
 /insights-sitemap.xml  https://wewucfgrtxpolxlxmitq.supabase.co/functions/v1/public-insights/sitemap  200
-/insights/:slug/  /insight.html?slug=:slug  200
+/insights/:slug/  https://wewucfgrtxpolxlxmitq.supabase.co/functions/v1/public-insights/:slug  200
 /insights/:slug  /insights/:slug/  301

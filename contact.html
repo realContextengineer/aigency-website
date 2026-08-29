@@ -30,10 +30,7 @@
       "addressRegion": "Dorset",
       "addressCountry": "GB"
     },
-    "areaServed": {
-      "@type": "City",
-      "name": "Bournemouth, Poole, Christchurch, Dorset"
-    },
+    "areaServed": ["Bournemouth", "Poole", "Christchurch", "Dorset", "Hampshire"],
     "geo": {"@type":"GeoCoordinates","latitude":50.7192,"longitude":-1.8808},
     "description": "Practical, GDPR-aware AI integration, one-to-one Zoom support and charity AI safety guidance for Dorset and Hampshire sole traders, individuals and small businesses.",
     "knowsAbout": [
@@ -86,9 +83,10 @@
       <!-- Contact Form -->
       <div class="bento-card span-8 training-theme warm-theme">
         <h2>Send Us a Message</h2>
-        <p style="margin-bottom: 2rem;">Fill out the form below and your enquiry will be sent to our secure online inbox. We aim to reply within one business day—no spam, no follow-up games, just a genuine conversation about your needs.</p>
+        <p style="margin-bottom: 2rem;">Use the form to send an enquiry directly to AiGENCY. Please do not include sensitive personal, financial or health information.</p>
 
-        <form class="contact-form" action="mailto:sync@aigency.ltd" method="POST" enctype="text/plain" id="contact-form">
+        <form class="contact-form" name="contact" method="POST" data-netlify="true" id="contact-form">
+          <input type="hidden" name="form-name" value="contact">
           <div class="form-group">
             <label for="name">Your Name</label>
             <input type="text" id="name" name="name" required autocomplete="name" aria-required="true">
@@ -110,7 +108,7 @@
           </div>
 
           <button type="submit" class="btn-primary">Talk to us</button>
-          <p class="contact-form-note" id="contact-form-note" aria-live="polite">If the online inbox is unavailable, you can email <a href="mailto:sync@aigency.ltd">sync@aigency.ltd</a> directly.</p>
+          <p class="contact-form-note" id="contact-form-note">Your message will be sent securely through Netlify Forms. You can also email <a href="mailto:sync@aigency.ltd">sync@aigency.ltd</a> directly.</p>
         </form>
       </div>
 
@@ -119,11 +117,11 @@
         <h3>Contact Details</h3>
         <p>Based in Bournemouth and working across Poole, Christchurch, Dorset and online.</p>
         <p><a href="tel:+447460685448">07460 685448</a><br><a href="mailto:sync@aigency.ltd">sync@aigency.ltd</a></p>
-        <a class="contact-map-link" href="https://www.google.com/maps/search/?api=1&amp;query=AI%20Consultant%20for%20Bournemouth" target="_blank" rel="noopener" aria-label="Find AI Consultant for Bournemouth on Google Maps">
-          <span class="contact-map-kicker">GOOGLE BUSINESS</span>
-          <strong>AI Consultant for Bournemouth</strong>
-          <small>Based in Bournemouth · Serving Dorset and beyond ↗</small>
-        </a>
+        <div class="contact-map-link" aria-label="Google Business Profile status">
+          <span class="contact-map-kicker">GOOGLE BUSINESS PROFILE</span>
+          <strong>Direct profile link to be confirmed</strong>
+          <small>A generic Maps search is not presented as a Business Profile.</small>
+        </div>
         <h3 style="margin-top: 2rem;">Quick Links</h3>
         <ul style="list-style: none; margin-top: 1rem;">
           <li style="margin-bottom: 1rem;"><a href="ai-health-check.html" style="color: var(--color-electric-cyan);">← Take the AI Health Check</a></li>

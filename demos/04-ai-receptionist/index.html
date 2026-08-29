@@ -6,19 +6,19 @@
   <meta name="theme-color" content="#090d14">
   <meta name="description" content="Explore AIGENCY's AI receptionist demo for Bournemouth and Dorset businesses — voice AI for answering calls, booking appointments, qualifying enquiries and human handover.">
   <meta name="robots" content="index,follow,max-image-preview:large">
-  <link rel="canonical" href="https://aigency.ltd/demos/ai-receptionist/">
+  <link rel="canonical" href="https://aigency.ltd/demos/04-ai-receptionist/">
   <link rel="sitemap" type="application/xml" href="sitemap.xml">
   <link rel="icon" type="image/png" href="assets/harbor-house-logo.png?v=2026-08-08-calla-compressed">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="AIGENCY">
   <meta property="og:title" content="AI Receptionist Bournemouth & Dorset | Voice AI Demo | AIGENCY">
   <meta property="og:description" content="See a dark, human-governed AI receptionist answer calls, take action and hand over with context.">
-  <meta property="og:url" content="https://aigency.ltd/demos/ai-receptionist/">
-  <meta property="og:image" content="https://aigency.ltd/demos/ai-receptionist/social-preview.svg">
+  <meta property="og:url" content="https://aigency.ltd/demos/04-ai-receptionist/">
+  <meta property="og:image" content="https://aigency.ltd/demos/04-ai-receptionist/social-preview.svg">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="AI Receptionist Bournemouth & Dorset | AIGENCY">
   <meta name="twitter:description" content="A live voice-agent design demonstration for Bournemouth and Dorset businesses.">
-  <meta name="twitter:image" content="https://aigency.ltd/demos/ai-receptionist/social-preview.svg">
+  <meta name="twitter:image" content="https://aigency.ltd/demos/04-ai-receptionist/social-preview.svg">
   <title>AI Receptionist Bournemouth &amp; Dorset | Voice AI Demo | AIGENCY</title>
   <link rel="stylesheet" href="../shared.css">
   <link rel="stylesheet" href="receptionist.css?v=2026-08-08-transparent-logo-left">
@@ -30,7 +30,7 @@
     "name": "AIGENCY AI Receptionist Demo",
     "alternateName": "Digital Front Desk",
     "description": "A static interactive design demonstration showing how an AI receptionist can answer calls, take routine actions and hand over to a human.",
-    "url": "https://aigency.ltd/demos/ai-receptionist/",
+    "url": "https://aigency.ltd/demos/04-ai-receptionist/",
     "applicationCategory": "BusinessApplication",
     "operatingSystem": "Web",
     "isAccessibleForFree": true,
@@ -161,19 +161,19 @@
 
       <section class="answer-section" aria-labelledby="answerTitle"><div class="section-intro-row"><div><p class="overline">CLEAR ANSWERS / BOURNEMOUTH · DORSET</p><h2 id="answerTitle">Questions a business should be able to answer quickly.</h2></div><p class="section-note">Short, self-contained answers help people, search engines and future agents understand the service.</p></div><div class="answer-grid"><details open><summary>What is an AI receptionist?</summary><p>An AI receptionist is a disclosed voice agent that answers calls, understands routine requests and either completes an approved task or hands the caller to a person.</p></details><details><summary>Can it book appointments?</summary><p>It can check a connected calendar and prepare or make an appointment when the business has approved that action. This demo simulates the booking.</p></details><details><summary>Can it transfer a caller to a real person?</summary><p>Yes. Human handover should remain visible and easy to request. Ava sends a concise context summary before Sarah joins this demonstration.</p></details><details><summary>Does it replace staff?</summary><p>No. It can reduce repetitive call handling, while judgement, sensitive conversations and exceptions remain with the human team.</p></details><details><summary>Could a Bournemouth small business use one?</summary><p>A Bournemouth, Poole, Christchurch or wider Dorset business could use a voice agent for opening hours, service questions, appointment requests and structured callbacks.</p></details><details><summary>Can it work with a CRM or calendar?</summary><p>Yes, with the right permissions and integrations. The cards above show demo states only; no live CRM, calendar or phone data is connected here.</p></details></div></section>
 
-      <section class="agent-section" id="agentAccess" aria-labelledby="agentTitle"><div class="agent-copy"><p class="overline">AGENT ACCESS / A2A-READY</p><h2 id="agentTitle">Human-friendly on the surface. Legible to agents underneath.</h2><p>This static demo exposes a truthful Agent Card at <code>/.well-known/agent-card.json</code>. It describes narrow simulated skills rather than pretending to be a live remote receptionist.</p><button class="desk-button primary small" id="agentButton" type="button">Inspect agent card</button></div><div class="agent-inspector"><div class="inspector-top"><span>AGENT REQUEST</span><span class="mono">SIMULATED</span></div><pre id="agentPreview">“Find an appointment next Tuesday afternoon for a residential enquiry.”
+      <section class="agent-section" id="agentAccess" aria-labelledby="agentTitle"><div class="agent-copy"><p class="overline">AGENT ACCESS / STATIC DEMO</p><h2 id="agentTitle">Human-friendly on the surface. Legible to agents underneath.</h2><p>This static demo shows a proposed agent contract for narrow simulated skills. It does not expose a public Agent Card or live remote task endpoint.</p><button class="desk-button primary small" id="agentButton" type="button">Inspect demo contract</button></div><div class="agent-inspector"><div class="inspector-top"><span>AGENT REQUEST</span><span class="mono">SIMULATED</span></div><pre id="agentPreview">“Find an appointment next Tuesday afternoon for a residential enquiry.”
 
-receptionist service
+receptionist demo contract
   availability found
   booking request prepared
-  human approval policy checked</pre><a href=".well-known/agent-card.json" target="_blank" rel="noopener">Open Agent Card ↗</a></div></section>
+  human approval policy checked</pre><span class="muted">No public Agent Card endpoint</span></div></section>
     </main>
 
     <footer class="desk-footer"><span>HARBOR HOUSE / FICTIONAL BUSINESS</span><span>AI receptionist · Bournemouth &amp; Dorset design demonstration by AIGENCY</span><a href="#agentAccess">Agent access ↗</a></footer>
   </div>
   <div class="desk-toast" id="deskToast" role="status" aria-live="polite"></div>
   <dialog class="transcript-dialog" id="transcriptDialog" aria-labelledby="dialogTitle"><form method="dialog"><button class="dialog-close" value="cancel" aria-label="Close">×</button><p class="overline">CALL RECORD / SIMULATED</p><h2 id="dialogTitle">Transcript</h2><div id="transcriptBody"></div></form></dialog>
-  <dialog class="transcript-dialog" id="agentDialog" aria-labelledby="agentDialogTitle"><form method="dialog"><button class="dialog-close" value="cancel" aria-label="Close">×</button><p class="overline">A2A / AGENT CARD</p><h2 id="agentDialogTitle">Receptionist contract</h2><pre id="agentBody">Loading card…</pre></form></dialog>
+  <dialog class="transcript-dialog" id="agentDialog" aria-labelledby="agentDialogTitle"><form method="dialog"><button class="dialog-close" value="cancel" aria-label="Close">×</button><p class="overline">A2A / STATIC DEMO</p><h2 id="agentDialogTitle">Receptionist contract</h2><pre id="agentBody">Loading demo contract…</pre></form></dialog>
   <script src="../shared.js"></script>
   <script src="app.js?v=2026-08-07-parallax-2"></script>
 </body>

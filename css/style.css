@@ -2327,6 +2327,91 @@ a:hover, a:focus-visible {
   line-height: 1;
 }
 
+.portfolio-demo-open {
+  overflow: hidden;
+}
+
+.portfolio-demo-window {
+  position: fixed;
+  z-index: 1200;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: clamp(0.65rem, 2vw, 1.5rem);
+  background: rgba(3, 6, 14, 0.8);
+  backdrop-filter: blur(12px);
+}
+
+.portfolio-demo-window[hidden] {
+  display: none;
+}
+
+.portfolio-demo-dialog {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  width: min(1320px, 100%);
+  height: min(900px, calc(100vh - clamp(1.3rem, 4vw, 3rem)));
+  overflow: hidden;
+  border: 1px solid rgba(225, 195, 147, 0.48);
+  border-radius: 1.15rem;
+  background: #0b1020;
+  box-shadow: 0 2.4rem 7rem rgba(0, 0, 0, 0.58), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.portfolio-demo-window-bar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 1rem;
+  min-height: 3.8rem;
+  padding: 0.65rem 0.75rem 0.65rem 1.1rem;
+  border-bottom: 1px solid rgba(225, 195, 147, 0.28);
+  background: linear-gradient(105deg, #111b2a, #241827 58%, #101a2a);
+}
+
+.portfolio-demo-window-kicker {
+  margin: 0;
+  color: rgba(235, 213, 178, 0.72);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+}
+
+.portfolio-demo-window-bar h3 {
+  margin: 0;
+  color: #fff4dd;
+  font-family: var(--font-headline);
+  font-size: clamp(0.95rem, 1.8vw, 1.25rem);
+  font-weight: 600;
+}
+
+.portfolio-demo-close {
+  display: grid;
+  width: 2.45rem;
+  height: 2.45rem;
+  place-items: center;
+  border: 1px solid rgba(242, 204, 143, 0.68);
+  border-radius: 50%;
+  color: #fff6e6;
+  background: rgba(73, 38, 51, 0.88);
+  cursor: pointer;
+  font: 400 1.75rem/1 var(--font-body);
+}
+
+.portfolio-demo-close:hover,
+.portfolio-demo-close:focus-visible {
+  outline: none;
+  border-color: #fff0cb;
+  background: #703949;
+}
+
+.portfolio-demo-frame {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #fff;
+}
+
 @media (max-width: 800px) {
   .portfolio-carousel-heading {
     align-items: flex-start;
@@ -2357,6 +2442,28 @@ a:hover, a:focus-visible {
   .portfolio-carousel-controls p {
     font-size: 0.78rem;
   }
+
+  .portfolio-demo-window {
+    padding: 0;
+  }
+
+  .portfolio-demo-dialog {
+    width: 100%;
+    height: 100vh;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .portfolio-demo-window-bar {
+    grid-template-columns: minmax(0, 1fr) auto;
+    min-height: 3.45rem;
+    padding-left: 0.85rem;
+  }
+
+  .portfolio-demo-window-kicker {
+    display: none;
+  }
+}
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -12387,9 +12494,10 @@ a:hover, a:focus-visible {
   border: 1px solid var(--route-edge);
   border-radius: 18px;
   background:
-    radial-gradient(circle at 86% 10%, var(--route-wash), transparent 34%),
+    linear-gradient(135deg, rgba(6,12,20,.46), rgba(6,11,20,.22)),
+    radial-gradient(circle at 86% 10%, var(--route-wash), transparent 42%),
     linear-gradient(145deg, rgba(255,255,255,.065), transparent 34%),
-    linear-gradient(150deg, #1b2435 0%, #111a2a 52%, #0b111f 100%);
+    var(--route-image) center / cover no-repeat;
   color: #f1f3ef;
   box-shadow:
     inset 3px 3px 0 rgba(255,255,255,.06),
@@ -12442,10 +12550,10 @@ a:hover, a:focus-visible {
   line-height: 1.48;
 }
 
-.training-route--learn { --route-edge: #5f8f79; --route-edge-dark: #294a3d; --route-accent: #a9d2bc; --route-wash: rgba(72,126,99,.22); --route-shadow: rgba(36,100,73,.24); }
-.training-route--safe { --route-edge: #c39a5d; --route-edge-dark: #6c4f2e; --route-accent: #f0d29b; --route-wash: rgba(190,143,70,.22); --route-shadow: rgba(161,113,47,.28); }
-.training-route--build { --route-edge: #9b6757; --route-edge-dark: #57372f; --route-accent: #ddb5a8; --route-wash: rgba(137,78,62,.2); --route-shadow: rgba(115,61,50,.24); }
-.training-route--support { --route-edge: #657da0; --route-edge-dark: #33455f; --route-accent: #b9c9e0; --route-wash: rgba(71,94,132,.24); --route-shadow: rgba(41,58,91,.28); }
+.training-route--learn { --route-edge: #5f8f79; --route-edge-dark: #294a3d; --route-accent: #a9d2bc; --route-wash: rgba(72,126,99,.22); --route-shadow: rgba(36,100,73,.24); --route-image: url('../assets/generated/training-route-learn-basics-v1.jpg'); }
+.training-route--safe { --route-edge: #c39a5d; --route-edge-dark: #6c4f2e; --route-accent: #f0d29b; --route-wash: rgba(190,143,70,.22); --route-shadow: rgba(161,113,47,.28); --route-image: url('../assets/generated/training-route-use-safely-v1.jpg'); }
+.training-route--build { --route-edge: #9b6757; --route-edge-dark: #57372f; --route-accent: #ddb5a8; --route-wash: rgba(137,78,62,.2); --route-shadow: rgba(115,61,50,.24); --route-image: url('../assets/generated/training-route-build-assistant-v1.jpg'); }
+.training-route--support { --route-edge: #657da0; --route-edge-dark: #33455f; --route-accent: #b9c9e0; --route-wash: rgba(71,94,132,.24); --route-shadow: rgba(41,58,91,.28); --route-image: url('../assets/generated/training-route-work-with-us-v1.jpg'); }
 
 .course-catalogue {
   padding: clamp(1.6rem, 4vw, 3rem);
@@ -12601,6 +12709,38 @@ a:hover, a:focus-visible {
   margin-bottom: 1.25rem;
 }
 
+/* Small, clearly disclosed human scenes support the training offer without
+   turning the page into a gallery. */
+.training-photo-card::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+.training-corner-photo {
+  float: right;
+  width: min(46%, 21rem);
+  margin: 0 0 1rem 1.15rem;
+}
+
+.training-corner-photo img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border: 1px solid rgba(232, 216, 197, .25);
+  border-radius: 14px;
+}
+
+.training-corner-photo figcaption {
+  margin-top: .45rem;
+  color: var(--color-steel-grey);
+  font-family: var(--font-mono);
+  font-size: .62rem;
+  letter-spacing: .12em;
+  text-align: right;
+}
+
 @media (max-width: 1000px) {
   .training-route-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .course-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -12612,6 +12752,11 @@ a:hover, a:focus-visible {
   .course-catalogue { padding: 1.2rem; }
   .course-card { min-height: 0; }
   .course-card-footer { align-items: flex-start; flex-direction: column; }
+  .training-corner-photo {
+    float: none;
+    width: 100%;
+    margin: 0 0 1rem;
+  }
 }
 
 /* ---------- AI SERVICES CATALOGUE ---------- */

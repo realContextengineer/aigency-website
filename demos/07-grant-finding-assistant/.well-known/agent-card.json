@@ -1,106 +1,11 @@
 {
-  "name": "GRANTFINDER AGENT",
-  "description": "A UK funding-discovery agent that matches organisations and projects to grant opportunities and returns structured research results, evidence requirements and reviewable application plans. This static preview demonstrates the human-facing workflow and agent result shape; it does not expose a remote A2A transport.",
-  "provider": {
-    "organization": "GrantFinder demo",
-    "url": "https://aigency.ltd"
-  },
-  "version": "0.1.0",
-  "documentationUrl": "./",
-  "capabilities": {
-    "streaming": false,
-    "pushNotifications": false,
-    "extendedAgentCard": false
-  },
-  "defaultInputModes": ["text/plain", "application/json"],
-  "defaultOutputModes": ["text/plain", "application/json"],
-  "skills": [
-    {
-      "id": "find_grants",
-      "name": "Find grants",
-      "description": "Identify relevant UK funding opportunities from a seeded research set.",
-      "tags": ["funding", "grants", "uk"],
-      "examples": ["Find funding for a Dorset community wellbeing project."],
-      "inputModes": ["text/plain", "application/json"],
-      "outputModes": ["application/json"]
-    },
-    {
-      "id": "match_grants_to_profile",
-      "name": "Match grants to an organisation profile",
-      "description": "Compare an organisation profile with published opportunity criteria and return a fit score with reasoning.",
-      "tags": ["matching", "eligibility", "criteria"],
-      "examples": ["Match these grants to a CIC supporting adults facing isolation."],
-      "inputModes": ["application/json"],
-      "outputModes": ["application/json"]
-    },
-    {
-      "id": "compare_grants",
-      "name": "Compare opportunities",
-      "description": "Return a structured comparison of funding amount, deadline, geography, theme and evidence requirements.",
-      "tags": ["comparison", "deadlines", "evidence"],
-      "examples": ["Compare the strongest matches and show what evidence is missing."],
-      "inputModes": ["application/json"],
-      "outputModes": ["application/json"]
-    },
-    {
-      "id": "prepare_application_plan",
-      "name": "Prepare an application plan",
-      "description": "Create a reviewable deadline and evidence plan for a selected opportunity.",
-      "tags": ["planning", "application", "evidence"],
-      "examples": ["Prepare the evidence and deadline plan for the best match."],
-      "inputModes": ["application/json"],
-      "outputModes": ["application/json"]
-    },
-    {
-      "id": "check_eligibility_criteria",
-      "name": "Check eligibility criteria",
-      "description": "Surface geography, organisation, theme and amount checks against the published criteria represented in the research set.",
-      "tags": ["eligibility", "criteria", "review"],
-      "examples": ["Show which eligibility criteria the Dorset CIC currently meets."],
-      "inputModes": ["application/json"],
-      "outputModes": ["application/json"]
-    },
-    {
-      "id": "list_required_evidence",
-      "name": "List required evidence",
-      "description": "Return the evidence items needed for a selected opportunity and identify the open human-review item.",
-      "tags": ["evidence", "provenance", "review"],
-      "examples": ["List the evidence still needed for the Coastal Communities Fund."],
-      "inputModes": ["application/json"],
-      "outputModes": ["application/json"]
-    },
-    {
-      "id": "prepare_deadline_schedule",
-      "name": "Prepare a deadline schedule",
-      "description": "Create a reviewable sequence of eligibility, evidence, drafting and submission milestones for a selected opportunity.",
-      "tags": ["deadlines", "planning", "application"],
-      "examples": ["Prepare a deadline schedule for the September submission."],
-      "inputModes": ["application/json"],
-      "outputModes": ["application/json"]
-    },
-    {
-      "id": "draft_from_evidence",
-      "name": "Draft from evidence",
-      "description": "Create a clearly labelled draft answer from the seeded organisation profile and evidence references for human review.",
-      "tags": ["drafting", "evidence", "human-review"],
-      "examples": ["Draft an answer from the impact report and participant survey."],
-      "inputModes": ["application/json"],
-      "outputModes": ["application/json"]
-    },
-    {
-      "id": "request_human_review",
-      "name": "Request human review",
-      "description": "Mark research or draft output as requiring human review before eligibility decisions or submission.",
-      "tags": ["human-review", "safety", "workflow"],
-      "examples": ["Return the shortlist for human review without submitting anything."],
-      "inputModes": ["application/json"],
-      "outputModes": ["application/json"]
-    }
-  ],
-  "metadata": {
-    "transportStatus": "static-preview",
-    "humanReviewRequired": true,
-    "matchScoreMeaning": "fit to published criteria, not a predicted probability of receiving funding",
-    "secretsExposed": false
-  }
+  "name": "GrantFinder static demo contract",
+  "version": "0.1",
+  "status": "static_demo_only",
+  "description": "A public documentation card for the GrantFinder design demonstration. It is not a live A2A service and accepts no remote tasks.",
+  "url": "https://aigency.ltd/demos/07-grant-finding-assistant/",
+  "taskEndpoint": null,
+  "authentication": "No authentication because no remote task endpoint exists.",
+  "simulatedSkills": ["find_grants", "match_to_profile", "compare_grants", "list_evidence", "prepare_plan", "human_review"],
+  "boundaries": ["No eligibility decision", "No application submission", "Human review is required"]
 }

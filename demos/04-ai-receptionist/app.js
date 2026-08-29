@@ -165,9 +165,15 @@ function openTranscript(mode) {
   dialog.showModal();
 }
 
-async function openAgentCard() {
+function openAgentCard() {
   const dialog = $('#agentDialog'); const body = $('#agentBody');
-  try { const response = await fetch('.well-known/agent-card.json'); const card = await response.json(); body.textContent = JSON.stringify(card, null, 2); } catch (error) { body.textContent = 'Agent Card is available at /.well-known/agent-card.json'; }
+  body.textContent = JSON.stringify({
+    status: 'static_demo',
+    publicAgentCard: null,
+    publicTaskEndpoint: null,
+    simulatedSkills: ['check_availability', 'prepare_booking_request', 'prepare_handover_summary'],
+    boundary: 'No external action is taken. Human approval is required.'
+  }, null, 2);
   dialog.showModal();
 }
 
