@@ -1,4 +1,4 @@
-import { proxyInsights } from "./lib/insights-proxy.mjs";
+import { renderInsight } from "./lib/insights-render.mjs";
 
 export default async (request) => {
   const url = new URL(request.url);
@@ -11,5 +11,5 @@ export default async (request) => {
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
     return new Response("Not found", { status: 404, headers: { "content-type": "text/html; charset=utf-8" } });
   }
-  return proxyInsights(request, slug);
+  return renderInsight(request, slug);
 };
