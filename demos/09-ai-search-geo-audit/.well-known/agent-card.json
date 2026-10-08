@@ -3,7 +3,7 @@
   "version": "0.1",
   "status": "static_demo_only",
   "description": "A public documentation card for the AEO Expert design demonstration. It is not a live A2A service and accepts no remote tasks.",
-  "url": "https://aigency.ltd/demos/09-ai-search-geo-audit/",
+  "url": "https://www.a2adesign.co.uk/demos/09-ai-search-geo-audit/",
   "taskEndpoint": null,
   "authentication": "No authentication because no remote task endpoint exists.",
   "simulatedSkills": ["audit_website", "analyse_seo", "analyse_aeo", "analyse_geo", "prioritise_recommendations"],

@@ -6,3 +6,8 @@
 /insights-sitemap.xml  /.netlify/functions/insights-sitemap  200
 /insights/:slug/  /.netlify/functions/insights-article?slug=:slug  200
 /insights/:slug  /insights/:slug/  301
+
+/ai-health-check.html /services.html 301
+
+/demos/03-send-neuro-friendly/ /creative-design.html 301!
+/demos/03-send-neuro-friendly/* /creative-design.html 301!

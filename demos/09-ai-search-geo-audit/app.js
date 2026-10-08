@@ -16,7 +16,7 @@ const evidenceRecords = {
     foot: 'This preview does not make a network request. The backend audit will replace this record with page-level evidence.'
   },
   'aeo-company-definition': {
-    title: 'What does AIGENCY do?',
+    title: 'What does A2A DESIGN do?',
     type: 'Heuristic sample',
     claim: 'The organisation needs a concise, independently extractable definition near the top of its Services content.',
     source: 'Sample question register · /services/ai-search',
@@ -67,7 +67,7 @@ const evidenceRecords = {
     observed: '07 Aug 2026 · demo fixture',
     method: 'Cross-page entity comparison across the sample route map.',
     confidence: 'High',
-    quote: 'AIGENCY Ltd · AI systems studio · aigency.ltd',
+    quote: 'A2A Design · AI systems studio · www.a2adesign.co.uk',
     foot: 'Production version: list every page and external record that contributed to this observation.'
   },
   'geo-service-definition': {
@@ -122,7 +122,7 @@ const evidenceRecords = {
     observed: '07 Aug 2026 · demo fixture',
     method: 'Page-level extract and clarity review.',
     confidence: 'Medium',
-    quote: 'AIGENCY provides AI search audits covering SEO, AEO and GEO…',
+    quote: 'A2A DESIGN provides AI search audits covering SEO, AEO and GEO…',
     foot: 'Production version: store the source HTML, selector or text range, and page response metadata.'
   },
   'rec-01': {
@@ -175,7 +175,7 @@ const pageRecords = {
   'ai-search': {
     path: '/services/ai-search', type: 'Commercial service page', priority: 'high',
     signals: [['Good', 'signal-good'], ['Needs stronger answers', 'signal-warn'], ['Good references', 'signal-good'], ['Weak', 'signal-low']],
-    extract: '“AIGENCY provides AI search audits covering SEO, AEO and GEO…”',
+    extract: '“A2A DESIGN provides AI search audits covering SEO, AEO and GEO…”',
     extractReason: 'Clear · self-contained · named',
     unclear: 'Who is the service for, and what evidence supports the outcome?',
     unclearReason: 'Recommendation · confidence medium', evidenceId: 'page-ai-search'
@@ -183,7 +183,7 @@ const pageRecords = {
   automation: {
     path: '/services/automation', type: 'Commercial service page', priority: 'good',
     signals: [['Good', 'signal-good'], ['Strong answer', 'signal-good'], ['Good references', 'signal-good'], ['Medium', 'signal-warn']],
-    extract: '“AIGENCY builds custom automation systems around the way your team works…”',
+    extract: '“A2A DESIGN builds custom automation systems around the way your team works…”',
     extractReason: 'Named · direct · service-led',
     unclear: 'Which outcomes are measured after implementation?',
     unclearReason: 'Recommendation · confidence medium', evidenceId: 'aeo-crm-answer'
@@ -191,7 +191,7 @@ const pageRecords = {
   about: {
     path: '/about', type: 'Organisation page', priority: 'medium',
     signals: [['Good', 'signal-good'], ['Unclear identity', 'signal-warn'], ['Mixed references', 'signal-warn'], ['Needs proof', 'signal-low']],
-    extract: '“AIGENCY is an AI systems studio working across automation, agents and search…”',
+    extract: '“A2A DESIGN is an AI systems studio working across automation, agents and search…”',
     extractReason: 'Organisation named · definition needs tightening',
     unclear: 'The company definition changes across core pages.',
     unclearReason: 'Observed · confidence high', evidenceId: 'rec-01'
@@ -207,7 +207,7 @@ const pageRecords = {
   contact: {
     path: '/contact', type: 'Contact and location page', priority: 'good',
     signals: [['Good', 'signal-good'], ['Clear location', 'signal-good'], ['Corroborated fixture', 'signal-good'], ['Source record pending', 'signal-warn']],
-    extract: '“AIGENCY is based in Bournemouth, Dorset.”',
+    extract: '“A2A DESIGN is based in Bournemouth, Dorset.”',
     extractReason: 'Location named · provenance visible in sample',
     unclear: 'The external company record is not linked in this preview.',
     unclearReason: 'External evidence · confidence medium', evidenceId: 'geo-bournemouth'
@@ -254,7 +254,7 @@ const artifact = {
   geoFindings: { entityClarity: 'strong', evidenceDensity: 'medium', citationReadiness: 'needs_work' },
   aiSearchFindings: { machineAccessiblePages: '16/18', structuredAnswerOpportunities: 9, priorityContentGaps: 6 },
   externalResearch: { publicSourcesReviewed: 21, competitorsCompared: 5, entityInconsistencies: 3 },
-  entities: { organisation: 'AIGENCY Ltd', website: 'aigency.ltd', location: 'Bournemouth, Dorset' },
+  entities: { organisation: 'A2A Design', website: 'www.a2adesign.co.uk', location: 'Bournemouth, Dorset' },
   competitors: ['brightfield.example'],
   priorityActions: Object.values(recommendationRecords),
   actionPlan: [],
@@ -584,7 +584,7 @@ document.addEventListener('DOMContentLoaded', () => {
   $('#runAudit')?.addEventListener('click', runCrawl);
   $('#startCrawl')?.addEventListener('click', runCrawl);
   $('[data-action="theme"]')?.addEventListener('click', () => setTheme(document.body.classList.contains('theme-light') ? 'dark' : 'light'));
-  $('[data-action="demo"]')?.addEventListener('click', () => { setTarget('aigency.ltd', true); });
+  $('[data-action="demo"]')?.addEventListener('click', () => { setTarget('www.a2adesign.co.uk', true); });
   $('#compareButton')?.addEventListener('click', compareEvidence);
   $('[data-action="confirm"]')?.addEventListener('click', addSelectedAction);
   $$('[data-action="export"]').forEach(button => button.addEventListener('click', () => button.dataset.exportFormat === 'markdown' ? exportReport() : exportArtifact()));

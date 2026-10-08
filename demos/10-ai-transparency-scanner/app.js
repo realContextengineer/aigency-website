@@ -22,7 +22,7 @@ const viewCopy = {
   report: ['Review report', 'Exportable record', 'A structured record of evidence, uncertainty, recommendations and human decisions required.'],
   methodology: ['Methodology', 'Transparency about transparency', 'Every finding carries a posture so uncertainty does not become a false verdict.'],
   agent: ['Agent access', 'A2A ready', 'An honest Agent Card for future orchestration, with human judgement kept explicit.'],
-  demo: ['Demo information', 'About ACT 50', 'A fictional AIGENCY product concept demonstrating an evidence-led review instrument.']
+  demo: ['Demo information', 'About ACT 50', 'A fictional A2A DESIGN product concept demonstrating an evidence-led review instrument.']
 };
 
 const labels = {

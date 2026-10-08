@@ -1,7 +1,7 @@
 {
   "name": "Northstar",
   "description": "A fictional adaptive SEND support portal demo for Bournemouth, Christchurch and Poole.",
-  "url": "https://aigency.ltd/demos/northstar/",
+  "url": "https://www.a2adesign.co.uk/demos/northstar/",
   "version": "0.1.0-demo",
   "protocol": "A2A-ready static agent contract",
   "capabilities": {
@@ -42,5 +42,5 @@
   },
   "demo": true,
   "notOfficialService": true,
-  "createdBy": "AIGENCY Ltd"
+  "createdBy": "A2A Design"
 }

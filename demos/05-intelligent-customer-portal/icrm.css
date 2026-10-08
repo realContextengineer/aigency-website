@@ -69,7 +69,7 @@ body.icrm-page :focus-visible { outline: 2px solid var(--icrm-copper-light); out
 .brand-logo img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 0 10px rgba(211,151,103,.14)); }
 .brand-wordmark { display: flex !important; align-items: baseline; gap: 5px; color: var(--icrm-text); }
 .brand-wordmark b { font: inherit; font-weight: 600; }
-.brand-aigency { color: var(--icrm-copper-light); }
+.brand-a2a { color: var(--icrm-copper-light); }
 .brand-icrm { color: var(--icrm-green); }
 .icrm-brand { display: flex; align-items: center; gap: 11px; }
 .icrm-brand strong, .icrm-brand small { display: block; }

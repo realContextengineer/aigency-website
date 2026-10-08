@@ -1,9 +1,9 @@
 {
-  "name": "AIGENCY Quote Agent",
+  "name": "A2A DESIGN Quote Agent",
   "description": "A structured scoping and indicative quotation service for digital, AI and automation projects.",
   "provider": {
-    "organization": "AIGENCY Ltd",
-    "url": "https://aigency.ltd"
+    "organization": "A2A Design",
+    "url": "https://www.a2adesign.co.uk"
   },
   "version": "0.1.0",
   "protocolVersion": "A2A-demo/1.0",
@@ -22,7 +22,7 @@
     {"id":"compare_quote_options","name":"Compare quote options","description":"Compare full scope and value-engineered routes."},
     {"id":"get_quote_status","name":"Get quote status","description":"Return the current status of a quote task or artifact."},
     {"id":"request_human_review","name":"Request human review","description":"Mark a quote or consequential action for human approval."},
-    {"id":"get_service_catalog","name":"Get service catalog","description":"Return configured AIGENCY service packages and optional modules."},
+    {"id":"get_service_catalog","name":"Get service catalog","description":"Return configured A2A DESIGN service packages and optional modules."},
     {"id":"get_pricing_constraints","name":"Get pricing constraints","description":"Return the commercial policy boundaries available to the quoting agent."}
   ],
   "capabilities": {

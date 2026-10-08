@@ -1,47 +1,37 @@
-# AiGENCY Ltd
+# A2A Design
 
-## Business Entity
+A2A Design works across agent-to-agent architecture, AI agent systems, interface design, AI-assisted development, AI transparency, AI search visibility and AI agent systems training.
 
-- **Name:** AiGENCY Ltd
-- **Website:** https://aigency.ltd
-- **Repository:** https://github.com/realContextengineer/aigency-website
-- **Location:** Bournemouth, Poole, Christchurch, Dorset, United Kingdom
-- **Coordinates:** 50.7192, -1.8808
-- **Phone:** +44 7460 685448
-- **Email:** sync@aigency.ltd
-- **Hours:** Monday-Friday 09:00-17:30
+## Website
 
-## Pricing
-
-- **Pricing:** Flexible, scope-based support for individuals, charities and small businesses
-- **Packages:** Flexible, zero-retainer support packages
-- **Areas served:** Bournemouth, Poole, Christchurch, Dorset, Hampshire, Wiltshire and Devon
+- Homepage: https://www.a2adesign.co.uk/
+- Services: https://www.a2adesign.co.uk/services.html
+- A2A services: https://www.a2adesign.co.uk/a2a.html
+- Hermes AI agent design: https://www.a2adesign.co.uk/hermes-agents.html
+- Interface and product design: https://www.a2adesign.co.uk/creative-design.html
+- AI agent systems training: https://www.a2adesign.co.uk/training.html
+- AI transparency and Article 50: https://www.a2adesign.co.uk/ai-transparency.html
+- AI search visibility: https://www.a2adesign.co.uk/seo-ai-search-visibility.html
+- Insights: https://www.a2adesign.co.uk/insights.html
+- Contact: https://www.a2adesign.co.uk/contact.html
 
 ## Services
 
-- **AI Automation Setup:** Email, enquiry and follow-up automation; CRM, booking, spreadsheet and website workflows; Zapier, Make, API and no-code automation support.
-- **Custom AI Agents:** Customer enquiry and FAQ assistants; internal knowledge-base agents; sales, onboarding and admin support agents.
-- **One-to-One AI Support:** ChatGPT, Claude and everyday AI workflows; prompting for emails, quotes, content and planning; calm Zoom support for individuals, charities and small organisations.
-- **Charity & Community Support:** Neuro-friendly AI consultancy and digital safety support for charities and community organisations.
-- **Focus:** Sole traders, small businesses, individuals and charities. AiGENCY is not currently offering large corporate training programmes or office-based presentations.
-- **Ongoing AI Support:** Review automations and fix friction; improve prompts and agent behaviour; support staff as habits change.
-- **AI Business Audit:** Map admin bottlenecks and repeated tasks; spot safe automation opportunities; prioritise quick wins; plain-English recommendations.
-- **AI Transparency & Article 50 Readiness:** Human-led public-surface review of AI interaction disclosure, synthetic-content marking and human handover. The on-site scanner is marked coming soon; this is evidence-led consultancy, not legal advice. https://aigency.ltd/ai-transparency.html
-- **AI Search Visibility (SEO, AEO & GEO):** Human-led search and answer-engine visibility work for content, entities, technical signals and trustworthy citations. The on-site scanner is marked coming soon. https://aigency.ltd/seo-ai-search-visibility.html
-- **Hermes AI Agents:** Design and delivery support for human-supervised agent experiences, with boundaries, escalation and useful workflow design. https://aigency.ltd/hermes-agents.html
-- **A2A Agent Integration:** Design and build support for agent-to-agent and MCP integrations with permissions, security and human approval. AiGENCY does not claim to operate a public A2A network or endpoint. https://aigency.ltd/a2a.html
-- **Creative Design:** Human-centred websites, mobile interfaces and agent-facing systems. https://aigency.ltd/creative-design.html
+- **A2A integration:** Agent-to-agent architecture, Agent Cards, client and server integration, task flows and MCP tool connections. A2A Design does not claim to operate a public A2A network or endpoint.
+- **AI agent design:** Agent roles, capabilities, skills, tool access and operational workflows, including Hermes agent systems.
+- **Interface design:** Web, mobile, product and agent-facing interfaces, design systems and prototypes.
+- **AI-assisted development:** Iterative AI-assisted coding and vibe-coded prototypes shaped through interface design, testing and project structure.
+- **AI transparency:** Review visible AI interactions, disclosures and generated content. The public scanner is marked as coming soon. This service is not legal advice.
+- **AI search visibility:** Technical SEO, crawlability, structured data, content structure and internal architecture. The public scanner is marked as coming soon. No ranking or citation outcome is guaranteed.
+- **AI agent systems training:** Project-based training in agent systems, A2A and MCP architecture, interface design and AI-assisted development.
 
-## Credentials
+## Contact
 
-- **Experience:** 30+ years in applied psychology, computing, and design.
-- **Education:** Master of Arts in Sound Design for the Moving Image from Bournemouth Media School.
-- **Recognition:** Local Bournemouth AI consultancy; verify current search positions independently.
+- Location: Bournemouth, Poole, Christchurch and Dorset, United Kingdom
+- Email: ish@happyish.co.uk
 
-## Community
+## Public materials
 
-- **Community work:** AiGENCY does not claim a formal charity partnership, funding award or programme launch unless it is published and evidenced on the relevant public page.
-
-## Keywords
-
-AI Consultant Bournemouth, AI Automation, ChatGPT Training, Custom AI Agents, Dorset, Poole, Christchurch, Hampshire, Neuro-Inclusive Training, GDPR-Aware AI, Local SEO
+- Insights and technical articles: https://www.a2adesign.co.uk/insights.html
+- Sitemap: https://www.a2adesign.co.uk/sitemap.xml
+- Robots policy: https://www.a2adesign.co.uk/robots.txt

@@ -1,6 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.0";
 
-const siteUrl = "https://aigency.ltd";
+const siteUrl = "https://www.a2adesign.co.uk";
 const defaultImage = `${siteUrl}/assets/video%20:%20logo%20etc/logo.png`;
 const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
 const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
@@ -74,8 +74,18 @@ function safeExternalUrl(value: unknown) {
   return url && /^https?:\/\//.test(url) ? url : null;
 }
 
+function brandText(value: unknown) {
+  return String(value ?? "").replace(/AiGENCY(?:\s+Ltd)?/gi, "A2A Design");
+}
+
 function canonicalFor(post: InsightPost) {
-  return safeExternalUrl(post.canonical_url) ?? `${siteUrl}/insights/${encodeURIComponent(post.slug)}/`;
+  const fallback = `${siteUrl}/insights/${encodeURIComponent(post.slug)}/`;
+  const candidate = safeExternalUrl(post.canonical_url);
+  if (!candidate) return fallback;
+  const canonical = new URL(candidate);
+  canonical.protocol = "https:";
+  canonical.host = new URL(siteUrl).host;
+  return canonical.href;
 }
 
 function imageFor(post: InsightPost) {
@@ -107,6 +117,27 @@ function dateLabel(value: string | null) {
 
 function categoryLabel(value: string | null) {
   return String(value || "AI insight").replace(/-/g, " ").toUpperCase();
+}
+
+function themeFor(post: InsightPost) {
+  const themes: Record<string, string> = {
+    emerald: "training-theme",
+    green: "training-theme",
+    orange: "warm-theme",
+    "burnt-orange": "warm-theme",
+    blue: "hero-theme",
+    sapphire: "hero-theme",
+    plum: "bronze-theme",
+  };
+  const stored = String(post.tile_colour || "").trim().toLowerCase();
+  if (themes[stored]) return themes[stored];
+  const colours = ["training-theme", "warm-theme", "hero-theme", "bronze-theme"];
+  const source = String(post.slug || post.title || "insight");
+  let hash = 0;
+  for (let index = 0; index < source.length; index += 1) {
+    hash = ((hash << 5) - hash + source.charCodeAt(index)) | 0;
+  }
+  return colours[Math.abs(hash) % colours.length];
 }
 
 function sourceRows(value: unknown) {
@@ -203,11 +234,11 @@ function markdownToHtml(markdown: string) {
 }
 
 function siteHeader() {
-  return `<header class="header" role="banner"><a href="${siteUrl}/" class="logo" aria-label="AiGENCY Ltd home"><img src="${defaultImage}" alt="AiGENCY Ltd" class="logo-img"></a><nav aria-label="Main navigation"><ul class="nav-desktop"><li><a href="${siteUrl}/services.html">Services</a></li><li><a href="${siteUrl}/training.html">Training</a></li><li><a href="${siteUrl}/seo-ai-search-visibility.html">AI Search</a></li><li><a href="${siteUrl}/hermes-agents.html">AI Agents</a></li><li><a href="${siteUrl}/insights.html">Insights</a></li><li><a href="${siteUrl}/about.html">About</a></li><li><a href="${siteUrl}/ai-health-check.html" class="nav-cta">Start Here</a></li></ul></nav></header>`;
+  return `<header class="header" role="banner"><a href="${siteUrl}/" class="logo" aria-label="A2A Design home"><img src="${defaultImage}" alt="A2A Design" class="logo-img"></a><nav aria-label="Main navigation"><ul class="nav-desktop"><li><a href="${siteUrl}/services.html">Services</a></li><li><a href="${siteUrl}/training.html">Training</a></li><li><a href="${siteUrl}/seo-ai-search-visibility.html">AI Search</a></li><li><a href="${siteUrl}/hermes-agents.html">AI Agents</a></li><li><a href="${siteUrl}/insights.html">Insights</a></li><li><a href="${siteUrl}/about.html">About</a></li><li><a href="${siteUrl}/ai-health-check.html" class="nav-cta">Start Here</a></li></ul></nav></header>`;
 }
 
 function siteFooter() {
-  return `<footer class="footer"><p>AiGENCY Ltd publishes practical AI guidance for businesses across Bournemouth, Poole, Christchurch, Dorset and beyond.</p><nav class="footer-links" aria-label="Secondary navigation"><a href="${siteUrl}/insights.html">Insights</a><a href="${siteUrl}/insights/archive/">Article archive</a><a href="${siteUrl}/services.html">Services</a><a href="${siteUrl}/contact.html">Contact</a></nav></footer>`;
+  return `<footer class="footer"><p>A2A Design publishes practical AI guidance for businesses across Bournemouth, Poole, Christchurch, Dorset and beyond.</p><nav class="footer-links" aria-label="Secondary navigation"><a href="${siteUrl}/insights.html">Insights</a><a href="${siteUrl}/insights/archive/">Article archive</a><a href="${siteUrl}/services.html">Services</a><a href="${siteUrl}/contact.html">Contact</a></nav><p class="footer-meta footer-company">Happyish Ltd · Company number 16021561</p></footer>`;
 }
 
 function documentShell(options: { title: string; description: string; canonical: string; image: string; type: "article" | "website"; schema: Record<string, unknown>; body: string }) {
@@ -229,8 +260,8 @@ function htmlResponse(html: string, cacheControl: string, status = 200) {
 
 function articlePage(post: InsightPost) {
   const canonical = canonicalFor(post);
-  const title = post.seo_title || post.title;
-  const description = post.meta_description || post.excerpt || post.title;
+  const title = brandText(post.seo_title || post.title);
+  const description = brandText(post.meta_description || post.excerpt || post.title);
   const image = imageFor(post);
   const sources = sourceRows(post.sources);
   const sourceList = sources.map((source) => {
@@ -240,40 +271,40 @@ function articlePage(post: InsightPost) {
     const publisher = source.publisher ? ` · ${escapeHtml(source.publisher)}` : "";
     return `<li><a href="${escapeHtml(url)}" rel="noopener noreferrer" target="_blank">${escapeHtml(label)}</a>${publisher}</li>`;
   }).join("");
-  const author: Record<string, unknown> = { "@type": "Person", name: post.author_name || "AiGENCY Ltd" };
+  const author: Record<string, unknown> = { "@type": "Person", name: brandText(post.author_name || "A2A Design") };
   const authorUrl = safeExternalUrl(post.author_url);
   if (authorUrl) author.sameAs = authorUrl;
   const schema: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: post.title,
-    description,
+    description: brandText(description),
     mainEntityOfPage: canonical,
     url: canonical,
     datePublished: post.published_at,
     dateModified: post.updated_at || post.published_at,
     author,
-    publisher: { "@type": "Organization", name: "AiGENCY Ltd", url: siteUrl },
+    publisher: { "@type": "Organization", name: "A2A Design", url: siteUrl },
     image,
     citation: sources.map((source) => safeExternalUrl(source.url)).filter(Boolean)
   };
   const disclosure = post.ai_disclosure || "This is AI-generated text. It has been fact-checked against the cited sources, but may still contain errors.";
-  const body = `${siteHeader()}<main class="main" role="main"><div class="page-intro"><p class="eyebrow">${escapeHtml(`${dateLabel(post.published_at)} · ${categoryLabel(post.category_slug)}`)}</p><h1>${escapeHtml(post.title)}</h1><p class="subtitle">${escapeHtml(post.excerpt || "")}</p></div><div class="bento-grid"><article class="bento-card span-8 hero-theme article-body">${coverImageHtml(post, "insight-detail-image")}${markdownToHtml(post.body_markdown)}${sourceList ? `<section><h2>Sources</h2><ul>${sourceList}</ul></section>` : ""}</article><aside class="bento-card span-4 bronze-theme"><p class="eyebrow">AI TRANSPARENCY</p><p>${escapeHtml(disclosure)}</p><hr><p class="eyebrow">PUBLISHED BY</p><h2>${escapeHtml(post.author_name || "AiGENCY Ltd")}</h2><a href="${siteUrl}/insights/archive/" class="btn-primary btn-bronze">Browse all Insights</a></aside></div></main>${siteFooter()}`;
+  const body = `${siteHeader()}<main class="main" role="main"><div class="page-intro"><p class="eyebrow">${escapeHtml(`${dateLabel(post.published_at)} · ${categoryLabel(post.category_slug)}`)}</p><h1>${escapeHtml(brandText(post.title))}</h1><p class="subtitle">${escapeHtml(brandText(post.excerpt || ""))}</p></div><div class="bento-grid"><article class="bento-card span-8 ${themeFor(post)} article-body">${coverImageHtml(post, "insight-detail-image")}${markdownToHtml(brandText(post.body_markdown))}${sourceList ? `<section><h2>Sources</h2><ul>${sourceList}</ul></section>` : ""}</article><aside class="bento-card span-4 bronze-theme"><p class="eyebrow">AI TRANSPARENCY</p><p>${escapeHtml(brandText(disclosure))}</p><hr><p class="eyebrow">PUBLISHED BY</p><h2>${escapeHtml(brandText(post.author_name || "A2A Design"))}</h2><a href="${siteUrl}/insights/archive/" class="btn-primary btn-bronze">Browse all Insights</a></aside></div></main>${siteFooter()}`;
   return documentShell({ title, description, canonical, image, type: "article", schema, body });
 }
 
 function archivePage(posts: InsightPost[], page: number, count: number) {
   const pageSize = 18;
   const pages = Math.max(1, Math.ceil(count / pageSize));
-  const cards = posts.map((post) => `<article class="bento-card span-6 ${post.category_slug === "ai-search" ? "warm-theme" : "hero-theme"} insight-card">${coverImageHtml(post, "insight-card-image")}<div class="insight-card-body"><p class="eyebrow">${escapeHtml(`${dateLabel(post.published_at)} · ${categoryLabel(post.category_slug)}`)}</p><h2>${escapeHtml(post.title)}</h2><p>${escapeHtml(post.excerpt || "")}</p><a href="${siteUrl}/insights/${encodeURIComponent(post.slug)}/" class="btn-primary">Read the Insight</a></div></article>`).join("");
+  const cards = posts.map((post) => `<article class="bento-card span-6 ${themeFor(post)} insight-card">${coverImageHtml(post, "insight-card-image")}<div class="insight-card-body"><p class="eyebrow">${escapeHtml(`${dateLabel(post.published_at)} · ${categoryLabel(post.category_slug)}`)}</p><h2>${escapeHtml(brandText(post.title))}</h2><p>${escapeHtml(brandText(post.excerpt || ""))}</p><a href="${siteUrl}/insights/${encodeURIComponent(post.slug)}/" class="btn-primary">Read the Insight</a></div></article>`).join("");
   const previous = page > 1 ? `<a class="btn-primary" href="${siteUrl}/insights/archive/?page=${page - 1}">Newer posts</a>` : "";
   const next = page < pages ? `<a class="btn-primary btn-bronze" href="${siteUrl}/insights/archive/?page=${page + 1}">Older posts</a>` : "";
   const canonical = `${siteUrl}/insights/archive/${page > 1 ? `?page=${page}` : ""}`;
-  const schema = { "@context": "https://schema.org", "@type": "CollectionPage", name: "AiGENCY Insights archive", url: canonical, isPartOf: { "@type": "WebSite", name: "AiGENCY Ltd", url: siteUrl } };
+  const schema = { "@context": "https://schema.org", "@type": "CollectionPage", name: "A2A Design Insights archive", url: canonical, isPartOf: { "@type": "WebSite", name: "A2A Design", url: siteUrl } };
   const legacyCards = legacyArticles.map((article) => `<article class="bento-card span-6 warm-theme insight-card"><div class="insight-card-body"><p class="eyebrow">${escapeHtml(`${dateLabel(article.publishedAt)} · ${categoryLabel(article.category)}`)}</p><h2>${escapeHtml(article.title)}</h2><p>${escapeHtml(article.excerpt)}</p><a href="${escapeHtml(article.href)}" class="btn-primary btn-bronze">Read the article</a></div></article>`).join("");
-  const legacySection = page === 1 ? `<section class="insights-legacy-section" aria-labelledby="legacy-articles-title"><div class="page-intro"><p class="eyebrow">EARLIER PUBLISHED ARTICLES</p><h2 id="legacy-articles-title">The original AiGENCY library.</h2><p class="subtitle">These remain separate, canonical articles while the newer collection is published through the Insights system.</p></div><div class="bento-grid resources-grid">${legacyCards}</div></section>` : "";
-  const body = `${siteHeader()}<main class="main" role="main"><div class="page-intro"><p class="eyebrow">AI INSIGHTS ARCHIVE</p><h1>Research and practical guidance.</h1><p class="subtitle">Every published AiGENCY Insight, with evidence sources and clear routes into the full article.</p></div><section class="bento-grid resources-grid" aria-label="Insights archive">${cards || '<article class="bento-card span-12 bronze-theme"><h2>No published Insights yet.</h2><p>The archive will appear here as soon as the first article is published.</p></article>'}</section>${previous || next ? `<nav class="archive-pagination" aria-label="Archive pages">${previous}${next}</nav>` : ""}${legacySection}</main>${siteFooter()}`;
-  return documentShell({ title: "AI Insights Archive | AiGENCY Ltd", description: "Browse practical AI, SEO, AEO and GEO research from AiGENCY Ltd.", canonical, image: defaultImage, type: "website", schema, body });
+  const legacySection = page === 1 ? `<section class="insights-legacy-section" aria-labelledby="legacy-articles-title"><div class="page-intro"><p class="eyebrow">EARLIER PUBLISHED ARTICLES</p><h2 id="legacy-articles-title">The original A2A Design library.</h2><p class="subtitle">These remain separate, canonical articles while the newer collection is published through the Insights system.</p></div><div class="bento-grid resources-grid">${legacyCards}</div></section>` : "";
+  const body = `${siteHeader()}<main class="main" role="main"><div class="page-intro"><p class="eyebrow">AI INSIGHTS ARCHIVE</p><h1>Research and practical guidance.</h1><p class="subtitle">Every published A2A Design Insight, with evidence sources and clear routes into the full article.</p></div><section class="bento-grid resources-grid" aria-label="Insights archive">${cards || '<article class="bento-card span-12 bronze-theme"><h2>No published Insights yet.</h2><p>The archive will appear here as soon as the first article is published.</p></article>'}</section>${previous || next ? `<nav class="archive-pagination" aria-label="Archive pages">${previous}${next}</nav>` : ""}${legacySection}</main>${siteFooter()}`;
+  return documentShell({ title: "AI Insights Archive | A2A Design", description: "Browse practical AI, SEO, AEO and GEO research from A2A Design.", canonical, image: defaultImage, type: "website", schema, body });
 }
 
 function sitemapResponse(posts: Array<Pick<InsightPost, "slug" | "updated_at" | "published_at">>) {

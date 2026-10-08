@@ -39,7 +39,7 @@
   }
 
   const demoTitle = demos[slug];
-  document.title = demoTitle + ' — AiGENCY design demo';
+  document.title = demoTitle + ' — A2A Design design demo';
   title.textContent = demoTitle;
   frame.title = demoTitle;
   frame.src = 'demos/' + encodeURIComponent(slug) + '/';

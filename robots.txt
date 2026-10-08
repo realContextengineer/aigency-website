@@ -13,5 +13,5 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://aigency.ltd/sitemap.xml
-Sitemap: https://aigency.ltd/insights-sitemap.xml
+Sitemap: https://www.a2adesign.co.uk/sitemap.xml
+Sitemap: https://www.a2adesign.co.uk/insights-sitemap.xml

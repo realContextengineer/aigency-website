@@ -1,5 +1,5 @@
 /* ========================================
-   AIGENCY.LTD - MAIN JAVASCRIPT
+   A2A DESIGN - MAIN JAVASCRIPT
    Mobile Navigation, Quiz Logic & Interactions
    ======================================== */
 
@@ -10,7 +10,7 @@
   // the static site; Row Level Security controls anonymous access.
   const SUPABASE_URL = 'https://wewucfgrtxpolxlxmitq.supabase.co';
   const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_fNprfjd08FhOtHorM-IAjw_fJqDYSyr';
-  const AI_ARTICLE_DISCLOSURE = 'This article was generated and researched by Arthur, AiGENCY’s persistent-memory AI. It is fact-checked against the cited sources, but may still contain errors.';
+  const AI_ARTICLE_DISCLOSURE = 'This article was generated and researched by Arthur, A2A Design’s persistent-memory AI. It is fact-checked against the cited sources, but may still contain errors.';
 
   async function supabaseInsert(table, payload) {
     const response = await fetch(SUPABASE_URL + '/rest/v1/' + table, {
@@ -44,16 +44,36 @@
     return response.json();
   }
 
-  const PUBLIC_INSIGHTS_SELECT = [
+  const PUBLIC_INSIGHTS_BASE_SELECT = [
     'slug', 'title', 'published_at', 'updated_at', 'category_slug',
     'display_zone', 'display_order', 'excerpt', 'body_markdown', 'sources',
     'author_name', 'author_url', 'seo_title', 'meta_description',
     'canonical_url', 'cover_image_path', 'cover_image_alt', 'ai_disclosure'
   ].join(',');
+  const PUBLIC_INSIGHTS_SELECT = PUBLIC_INSIGHTS_BASE_SELECT + ',ai_image_disclosure,tile_colour';
 
-  function publishedInsightsQuery(order) {
-    return 'select=' + PUBLIC_INSIGHTS_SELECT
+  function publishedInsightsQuery(order, select) {
+    return 'select=' + (select || PUBLIC_INSIGHTS_SELECT)
       + '&status=eq.published&order=' + (order || 'published_at.desc,display_order.asc');
+  }
+
+  async function selectPublishedInsights(order) {
+    try {
+      return await supabaseSelect('insights_posts', publishedInsightsQuery(order));
+    } catch (error) {
+      // Keep the archive readable during the short interval between a website
+      // deployment and the presentation-metadata migration reaching Supabase.
+      return supabaseSelect('insights_posts', publishedInsightsQuery(order, PUBLIC_INSIGHTS_BASE_SELECT));
+    }
+  }
+
+  async function selectPublishedInsight(slug) {
+    const suffix = '&status=eq.published&slug=eq.' + encodeURIComponent(slug) + '&limit=1';
+    try {
+      return await supabaseSelect('insights_posts', 'select=' + PUBLIC_INSIGHTS_SELECT + suffix);
+    } catch (error) {
+      return supabaseSelect('insights_posts', 'select=' + PUBLIC_INSIGHTS_BASE_SELECT + suffix);
+    }
   }
 
   const insightColourThemes = {
@@ -114,7 +134,7 @@
     return insightColourThemes[insightFallbackColour(post)];
   }
 
-  // The original, still-public AiGENCY articles remain in the library while
+  // The original, still-public A2A Design articles remain in the library while
   // Arthur's Supabase collection grows. New database articles lead the page;
   // these links preserve the existing archive rather than making it disappear.
   const legacyInsights = [
@@ -148,7 +168,7 @@
 
   function insightLink(slug) {
     // Local preview has no Netlify rewrite layer, so it opens the reusable
-    // AiGENCY article view directly. Production keeps the clean article URL.
+    // A2A Design article view directly. Production keeps the clean article URL.
     if (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost') {
       return '/insight.html?slug=' + encodeURIComponent(slug);
     }
@@ -366,7 +386,7 @@
     const citations = sources.map(function(source) {
       return safeExternalUrl(source && source.url);
     }).filter(Boolean);
-    const author = { '@type': 'Person', name: post.author_name || 'AiGENCY Ltd' };
+    const author = { '@type': 'Person', name: post.author_name || 'A2A Design' };
     const authorUrl = safeExternalUrl(post.author_url);
     if (authorUrl) author.sameAs = authorUrl;
     const schema = {
@@ -377,7 +397,7 @@
       mainEntityOfPage: { '@type': 'WebPage', '@id': canonicalUrl },
       url: canonicalUrl,
       author: author,
-      publisher: { '@type': 'Organization', name: 'AiGENCY Ltd', url: 'https://aigency.ltd/' },
+      publisher: { '@type': 'Organization', name: 'A2A Design', url: 'https://www.a2adesign.co.uk/' },
       citation: citations
     };
     if (post.published_at) schema.datePublished = post.published_at;
@@ -395,7 +415,7 @@
     const section = document.querySelector('[data-insight-previous-section]');
     if (!list || !section) return;
     list.replaceChildren();
-    // Keep the live Supabase notes and the established AiGENCY archive together
+    // Keep the live Supabase notes and the established A2A Design archive together
     // here. The rail is a catalogue of the whole library, so an overflow post
     // is still reachable when a visitor opens any other Field Note.
     const seen = new Set();
@@ -482,12 +502,12 @@
 
     if (download) {
       download.onclick = function() {
-        const contents = [post.title || 'AiGENCY Field Note', '', post.excerpt || '', '', String(post.body_markdown || '')].join('\n');
+        const contents = [post.title || 'A2A Design Field Note', '', post.excerpt || '', '', String(post.body_markdown || '')].join('\n');
         const blob = new Blob([contents], { type: 'text/markdown;charset=utf-8' });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = (post.slug || 'aigency-field-note') + '.md';
+        link.download = (post.slug || 'a2a-design-field-note') + '.md';
         link.click();
         window.setTimeout(function() { URL.revokeObjectURL(url); }, 0);
       };
@@ -720,7 +740,7 @@
       },
       {
         question: 'What should I do after reading a Note?',
-        answer: 'Pick the one closest to your business, ask Arthur what it means in practice, then take the next decision to a person at AiGENCY.'
+        answer: 'Pick the one closest to your business, ask Arthur what it means in practice, then take the next decision to a person at A2A Design.'
       }
     ];
     let sessionId = window.sessionStorage.getItem(sessionKey) || '';
@@ -868,10 +888,10 @@
     meta.textContent = insightMeta(post);
     title.textContent = post.title || 'AI insight';
     excerpt.textContent = post.excerpt || '';
-    if (author) author.textContent = post.author_name || 'AiGENCY Ltd';
-    // Keep every published note on the same compact, plain-language disclosure.
-    // Older database records contain a legacy version of this copy.
-    if (disclosure) disclosure.textContent = AI_ARTICLE_DISCLOSURE;
+    if (author) author.textContent = post.author_name || 'A2A Design';
+    // Keep each note's named research agent accurate while retaining the
+    // established wording for older records without stored disclosure copy.
+    if (disclosure) disclosure.textContent = post.ai_disclosure || AI_ARTICLE_DISCLOSURE;
     const imageUrl = insightImage(post);
     if (image && imageUrl) {
       image.src = imageUrl;
@@ -913,9 +933,9 @@
     mountInsightAudio();
     mountInsightChat(post);
     detailSection.hidden = false;
-    const canonicalUrl = safeExternalUrl(post.canonical_url) || (post.slug ? 'https://aigency.ltd/insights/' + encodeURIComponent(post.slug) + '/' : 'https://aigency.ltd/insights.html');
+    const canonicalUrl = safeExternalUrl(post.canonical_url) || (post.slug ? 'https://www.a2adesign.co.uk/insights/' + encodeURIComponent(post.slug) + '/' : 'https://www.a2adesign.co.uk/insights.html');
     const pageTitle = post.seo_title || post.title || 'AI insight';
-    const pageDescription = post.meta_description || post.excerpt || 'AiGENCY Insight';
+    const pageDescription = post.meta_description || post.excerpt || 'A2A Design Insight';
     document.title = pageTitle;
     const description = document.querySelector('meta[name="description"]');
     if (description) description.setAttribute('content', pageDescription);
@@ -955,10 +975,18 @@
       renderInsightDetailError();
       return;
     }
+    // Netlify renders published Insights with the exact post and a compact
+    // catalogue already in the initial document. Reuse that response instead
+    // of making the browser ask Supabase for the same two records again.
+    const serverRendered = window.__A2A_DESIGN_INSIGHT_SSR__;
+    if (serverRendered && serverRendered.post && serverRendered.post.slug === slug && Array.isArray(serverRendered.posts)) {
+      renderInsightDetail(serverRendered.post, serverRendered.posts);
+      return;
+    }
     try {
       const results = await Promise.all([
-        supabaseSelect('insights_posts', publishedInsightsQuery()),
-        supabaseSelect('insights_posts', 'select=' + PUBLIC_INSIGHTS_SELECT + '&status=eq.published&slug=eq.' + encodeURIComponent(slug) + '&limit=1')
+        selectPublishedInsights(),
+        selectPublishedInsight(slug)
       ]);
       const post = Array.isArray(results[1]) ? results[1][0] : null;
       if (!post) throw new Error('Insight not found');
@@ -1004,7 +1032,7 @@
     body.append(
       createInsightElement('p', insightMeta(post), 'eyebrow'),
       createInsightElement('h3', post.title || 'Untitled Insight'),
-      createInsightElement('p', post.excerpt || 'Read the latest AiGENCY Insight.'),
+      createInsightElement('p', post.excerpt || 'Read the latest A2A Design Insight.'),
       articleLink
     );
     if (imageUrl) {
@@ -1028,7 +1056,7 @@
     if (!cards.length) return;
 
     try {
-      const posts = await supabaseSelect('insights_posts', publishedInsightsQuery());
+      const posts = await selectPublishedInsights();
       const latestPosts = newestHomepageInsights(posts);
       latestPosts.forEach(function(post, index) {
         renderHomepageInsightCard(cards[index], post);
@@ -1053,7 +1081,7 @@
     if (!latestCard && !featuredCard && !libraryGrid) return;
 
     try {
-      const posts = await supabaseSelect('insights_posts', publishedInsightsQuery());
+      const posts = await selectPublishedInsights();
       const visiblePosts = Array.isArray(posts) ? posts.filter(function(post) { return post && post.slug; }) : [];
       const featured = visiblePosts.find(function(post) { return post.display_zone === 'featured'; });
       const latest = visiblePosts.find(function(post) { return !featured || post.slug !== featured.slug; });
@@ -1180,7 +1208,7 @@
     panel.setAttribute('role', 'dialog');
     panel.setAttribute('aria-modal', 'false');
     panel.setAttribute('aria-labelledby', 'ai-talk-title');
-    panel.innerHTML = '<div class="ai-talk-arthur-stage"><div class="ai-talk-arthur-portrait ai-talk-arthur-avatar" data-ai-talker-avatar aria-label="Arthur Light animated avatar"><img src="/assets/arthur-ai-intern.png" alt="Arthur Light"><span class="ai-talk-avatar-loading">Preparing Arthur…</span></div><div class="ai-talk-arthur-name"><p class="ai-talk-kicker">PERSISTENT AI INTERN</p><h2 id="ai-talk-title">Arthur Light</h2></div><button type="button" class="ai-talk-close" aria-label="Close Arthur Light">×</button></div><div class="ai-talk-messages" aria-live="polite"><div class="ai-talk-message ai-talk-message-agent"><p>Hello — I’m Arthur Light, AiGENCY’s persistent AI intern, built on Hermes Agent. I keep the public site and Field Notes in view, so I can help you pick up the thread. What would you like to explore?</p></div></div><div class="ai-talk-composer"><input type="text" placeholder="Ask Arthur Light…" aria-label="Ask Arthur Light" maxlength="1600"><button type="button" class="ai-talk-send" aria-label="Send message">↗</button></div><a class="ai-talk-human" href="/contact.html?service=AiGENCY%20AI%20conversation">Talk to a person <span aria-hidden="true">↗</span></a>';
+    panel.innerHTML = '<div class="ai-talk-arthur-stage"><div class="ai-talk-arthur-portrait ai-talk-arthur-avatar" data-ai-talker-avatar aria-label="Arthur Light animated avatar"><img src="/assets/arthur-ai-intern.png" alt="Arthur Light"><span class="ai-talk-avatar-loading">Preparing Arthur…</span></div><div class="ai-talk-arthur-name"><p class="ai-talk-kicker">PERSISTENT AI INTERN</p><h2 id="ai-talk-title">Arthur Light</h2></div><button type="button" class="ai-talk-close" aria-label="Close Arthur Light">×</button></div><div class="ai-talk-messages" aria-live="polite"><div class="ai-talk-message ai-talk-message-agent"><p>Hello — I’m Arthur Light, A2A Design’s persistent AI intern, built on Hermes Agent. I keep the public site and Field Notes in view, so I can help you pick up the thread. What would you like to explore?</p></div></div><div class="ai-talk-composer"><input type="text" placeholder="Ask Arthur Light…" aria-label="Ask Arthur Light" maxlength="1600"><button type="button" class="ai-talk-send" aria-label="Send message">↗</button></div><a class="ai-talk-human" href="/contact.html?service=A2A Design%20AI%20conversation">Talk to a person <span aria-hidden="true">↗</span></a>';
 
     const closeButton = panel.querySelector('.ai-talk-close');
     const messages = panel.querySelector('.ai-talk-messages');
@@ -1365,6 +1393,7 @@
   // previous mount function above as an inactive visual baseline until the
   // replacement has been approved on desktop and mobile; do not run both.
   function loadArthurLite() {
+    if (document.body && document.body.dataset.arthurMode === 'off') return;
     function appendArthurScript() {
       if (document.querySelector('script[data-arthur-lite-script]')) return;
       const script = document.createElement('script');
@@ -1396,7 +1425,7 @@
   loadArthurLite();
 
   // ========== MOBILE NAVIGATION ==========
-  const navToggle = document.querySelector('.nav-toggle');
+  const navToggles = document.querySelectorAll('.nav-toggle');
   const navMobile = document.querySelector('.nav-mobile');
 
   // Keep the mobile route explicit: "Start Here" is the same destination,
@@ -1607,18 +1636,24 @@
     }
   });
 
-  if (navToggle && navMobile) {
-    navToggle.addEventListener('click', function() {
-      const isExpanded = this.getAttribute('aria-expanded') === 'true';
-      this.setAttribute('aria-expanded', !isExpanded);
-      navMobile.classList.toggle('active');
-      document.body.style.overflow = isExpanded ? '' : 'hidden';
+  if (navToggles.length && navMobile) {
+    navToggles.forEach(function(toggle) {
+      toggle.addEventListener('click', function() {
+        const isExpanded = navMobile.classList.contains('active');
+        navToggles.forEach(function(button) {
+          button.setAttribute('aria-expanded', String(!isExpanded));
+        });
+        navMobile.classList.toggle('active', !isExpanded);
+        document.body.style.overflow = isExpanded ? '' : 'hidden';
+      });
     });
 
     const mobileLinks = navMobile.querySelectorAll('a');
     mobileLinks.forEach(function(link) {
       link.addEventListener('click', function() {
-        navToggle.setAttribute('aria-expanded', 'false');
+        navToggles.forEach(function(button) {
+          button.setAttribute('aria-expanded', 'false');
+        });
         navMobile.classList.remove('active');
         document.body.style.overflow = '';
       });
@@ -2015,9 +2050,9 @@
     });
     function summaryText() {
       if (!resultData) return '';
-      return 'AiGENCY AI Health Check\nOverall readiness: ' + resultData.percent + '%\n\n' + categories.map(function(category) {
+      return 'A2A Design AI Health Check\nOverall readiness: ' + resultData.percent + '%\n\n' + categories.map(function(category) {
         return category.label + ': ' + resultData.scores[category.key] + '%';
-      }).join('\n') + '\n\nA practical starting point for human-supervised AI support.\nhttps://aigency.ltd/ai-health-check.html';
+      }).join('\n') + '\n\nA practical starting point for human-supervised AI support.\nhttps://www.a2adesign.co.uk/ai-health-check.html';
     }
     quizHost.querySelector('.quiz-share').addEventListener('click', function() {
       const text = summaryText();
@@ -2025,7 +2060,7 @@
       const button = this;
       const done = function(message) { shareStatus.textContent = message; button.textContent = 'Copied to clipboard'; setTimeout(function() { button.textContent = 'Share my starting point'; }, 2200); };
       if (navigator.share) {
-        navigator.share({ title: 'My AiGENCY AI Health Check', text: text }).then(function() { done('Share sheet opened.'); }).catch(function() {});
+        navigator.share({ title: 'My A2A Design AI Health Check', text: text }).then(function() { done('Share sheet opened.'); }).catch(function() {});
       } else if (navigator.clipboard) {
         navigator.clipboard.writeText(text).then(function() { done('Your starting point is ready to paste.'); });
       }
@@ -2036,7 +2071,7 @@
       const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
-      link.download = 'aigency-ai-health-check-starting-point.txt';
+      link.download = 'a2a-design-ai-health-check-starting-point.txt';
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -2268,14 +2303,8 @@
           didPortfolioSwipe = false;
           return;
         }
-        const distance = (index - activePortfolioTile + portfolioTiles.length) % portfolioTiles.length;
-        if (distance === 0) {
-          event.preventDefault();
-          openPortfolioDemo(tile);
-          return;
-        }
         event.preventDefault();
-        turnPortfolioWheel(distance === portfolioTiles.length - 1 ? -1 : distance);
+        openPortfolioDemo(tile);
       });
     });
 
@@ -2325,10 +2354,15 @@
   // ========== KEYBOARD NAVIGATION ==========
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape' && navMobile && navMobile.classList.contains('active')) {
-      navToggle.setAttribute('aria-expanded', 'false');
+      const activeNavToggle = Array.from(navToggles).find(function(toggle) {
+        return toggle.getAttribute('aria-expanded') === 'true';
+      }) || navToggles[0];
+      navToggles.forEach(function(button) {
+        button.setAttribute('aria-expanded', 'false');
+      });
       navMobile.classList.remove('active');
       document.body.style.overflow = '';
-      navToggle.focus();
+      activeNavToggle?.focus();
     }
   });
 })();

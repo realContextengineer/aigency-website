@@ -3,7 +3,7 @@
   "version": "0.1",
   "status": "static_demo_only",
   "description": "A public documentation card for the DOSSIER design demonstration. It is not a live A2A service and accepts no remote tasks.",
-  "url": "https://aigency.ltd/demos/08-document-intelligence/",
+  "url": "https://www.a2adesign.co.uk/demos/08-document-intelligence/",
   "taskEndpoint": null,
   "authentication": "No authentication because no remote task endpoint exists.",
   "simulatedSkills": ["retrieve_authorised_sources", "compare_documents", "prepare_review_summary", "request_human_review"],

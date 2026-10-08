@@ -1,11 +1,11 @@
 {
   "protocolVersion": "0.3.0",
   "name": "Harbor House AI Receptionist Demo",
-  "description": "A fictional, static AIGENCY demonstration of a disclosed AI receptionist for Bournemouth and Dorset businesses. Skills simulate answering business questions, scheduling requests, qualification and human handover; no live phone, CRM or calendar transaction is exposed.",
-  "url": "https://aigency.ltd/demos/ai-receptionist/",
+  "description": "A fictional, static A2A DESIGN demonstration of a disclosed AI receptionist for Bournemouth and Dorset businesses. Skills simulate answering business questions, scheduling requests, qualification and human handover; no live phone, CRM or calendar transaction is exposed.",
+  "url": "https://www.a2adesign.co.uk/demos/ai-receptionist/",
   "provider": {
-    "organization": "AIGENCY",
-    "url": "https://aigency.ltd/"
+    "organization": "A2A DESIGN",
+    "url": "https://www.a2adesign.co.uk/"
   },
   "version": "2026.08.07",
   "capabilities": {
@@ -24,6 +24,6 @@
     {"id":"create_callback_request","name":"Create a callback request","description":"Prepare a simulated callback for the relevant team.","input":"Caller name, intent and preferred callback window.","output":"Callback request summary; no message is sent."}
   ],
   "authentication": {"schemes": [], "description": "No authentication is required for this static design demonstration."},
-  "endpoints": [{"url":"https://aigency.ltd/demos/ai-receptionist/", "transport":"static-web-demo", "description":"Human-facing demonstration and Agent Card only; no remote A2A service endpoint is claimed."}],
+  "endpoints": [{"url":"https://www.a2adesign.co.uk/demos/ai-receptionist/", "transport":"static-web-demo", "description":"Human-facing demonstration and Agent Card only; no remote A2A service endpoint is claimed."}],
   "contact": {"humanHandoverAvailable": true, "note":"The demo keeps human handover visible and does not impersonate a person."}
 }

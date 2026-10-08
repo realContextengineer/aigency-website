@@ -1,5 +1,5 @@
 /* ========================================
-   AIGENCY.LTD - DESIGN TOKENS & GLOBAL STYLES
+   A2A DESIGN - DESIGN TOKENS & GLOBAL STYLES
    Deep Navy, Digital Brass & Translucent Emerald
    Cognitive Sustainability Framework
    ======================================== */
@@ -51,7 +51,7 @@
   --color-warm-accent: #F59E0B;
   --color-warm-text: #CBD5E1;
 
-  /* Restrained brass-gold counterpoint sampled from the current AiGENCY mark */
+  /* Restrained brass-gold counterpoint sampled from the current A2A Design mark */
   --color-bronze-deep: #211b18;
   --color-bronze: #8f6a52;
   --color-bronze-light: #c59b7a;
@@ -421,7 +421,7 @@ a:hover, a:focus-visible {
   object-fit: contain;
   object-position: center;
   border-radius: 0;
-  content: url('../assets/aigency-hermes-logo-winged-2026-08.png');
+  content: url('../assets/a2a-design-logo-winged-2026-08.png');
   filter: brightness(0.96) saturate(0.96) drop-shadow(0 0 0.34rem rgba(197, 142, 95, 0.14));
   transition: filter 220ms ease, transform 220ms ease;
   animation: logoMarkLandingSpin 1100ms cubic-bezier(0.22, 0.72, 0.2, 1) both;
@@ -436,7 +436,7 @@ a:hover, a:focus-visible {
 }
 
 .logo::after {
-  content: 'AiGENCY';
+  content: 'A2A Design';
   display: inline-block;
   background-image:
     linear-gradient(
@@ -1252,7 +1252,7 @@ a:hover, a:focus-visible {
   0% { background-position: 100% 0, 0 0; }
   38% { background-position: 0 0, 0 0; }
   72% { background-position: 100% 0, 0 0; }
-  /* Finish on the second character: the lowercase i in AiGENCY. */
+  /* Finish on the second character: the lowercase i in A2A Design. */
   100% { background-position: 64% 0, 0 0; }
 }
 
@@ -1509,6 +1509,40 @@ a:hover, a:focus-visible {
   transition: border-color 220ms ease, background 220ms ease, box-shadow 220ms ease;
 }
 
+.nav-toggle-left {
+  display: flex;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 1.25rem;
+  z-index: 1;
+  margin: auto 0;
+  border-color: #50c878;
+  box-shadow: inset 0 1px 0 rgba(224, 255, 238, 0.22), 0 12px 28px rgba(0, 0, 0, 0.24), 0 0 0.75rem rgba(80, 200, 120, 0.2);
+}
+
+.nav-toggle-label {
+  margin: 0;
+  color: #ead2b7;
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 1;
+}
+
+.nav-toggle.nav-toggle-left:hover,
+.nav-toggle.nav-toggle-left:focus-visible {
+  border-color: #50c878;
+  box-shadow: inset 0 1px 0 rgba(224, 255, 238, 0.22), 0 12px 28px rgba(0, 0, 0, 0.24), 0 0 0.75rem rgba(80, 200, 120, 0.28);
+}
+
+@media (min-width: 1121px) {
+  .header {
+    padding-left: 6rem;
+  }
+}
+
 .nav-toggle span {
   position: relative;
   z-index: 1;
@@ -1540,14 +1574,20 @@ a:hover, a:focus-visible {
   left: 0;
   right: 0;
   bottom: 0;
+  height: calc(100dvh - var(--header-height));
+  max-height: calc(100dvh - var(--header-height));
   z-index: 999;
   background: rgba(11, 15, 25, 0.98);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  padding: 2rem;
+  padding: 2rem 2rem calc(2rem + env(safe-area-inset-bottom));
   list-style: none;
   flex-direction: column;
   gap: 1rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
 }
 
 .nav-mobile.active {
@@ -5383,6 +5423,11 @@ a:hover, a:focus-visible {
 /* ---------- INSIGHTS EDITORIAL SYSTEM ---------- */
 .insights-editorial-grid {
   margin-top: 2rem;
+  align-items: stretch;
+}
+
+.insights-editorial-grid > * {
+  min-width: 0;
 }
 
 .insights-page-intro {
@@ -5600,9 +5645,13 @@ a:hover, a:focus-visible {
 }
 
 .insight-detail-rail {
-  align-self: start;
+  align-self: stretch;
   display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
   gap: 1rem;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .insight-transparency-pill {
@@ -5801,7 +5850,10 @@ a:hover, a:focus-visible {
 
 .insight-previous-stack {
   display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
   gap: 0.7rem;
+  min-height: 0;
+  overflow: hidden;
   padding-top: 1rem;
   border-top: 1px solid rgba(170, 187, 200, 0.18);
 }
@@ -5809,7 +5861,8 @@ a:hover, a:focus-visible {
 .insight-previous-stack > div {
   display: grid;
   gap: 0.75rem;
-  max-height: min(58vh, 42rem);
+  min-height: 0;
+  height: 100%;
   overflow-y: auto;
   padding-right: 0.35rem;
   scrollbar-color: rgba(222, 175, 123, 0.62) rgba(8, 13, 22, 0.5);
@@ -5841,6 +5894,46 @@ a:hover, a:focus-visible {
   color: var(--color-steel-grey);
   font-size: 0.8rem;
   line-height: 1.48;
+}
+
+.insight-detail-page .article-body,
+.insight-detail-copy,
+[data-insight-detail-sources] {
+  min-width: 0;
+}
+
+[data-insight-detail-sources] a {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+@media (max-width: 800px) {
+  .insight-detail-page .insights-editorial-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .insight-detail-page .insights-editorial-grid > .article-body,
+  .insight-detail-page .insights-editorial-grid > .insight-detail-rail {
+    grid-column: 1 / -1;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .insight-detail-page .insight-detail-rail {
+    align-self: start;
+    grid-template-rows: auto auto;
+    overflow: visible;
+  }
+
+  .insight-detail-page .insight-previous-stack {
+    grid-template-rows: auto auto;
+    overflow: visible;
+  }
+
+  .insight-detail-page .insight-previous-stack > div {
+    height: auto;
+    max-height: min(58vh, 42rem);
+  }
 }
 
 .insight-previous-tile:first-child {
@@ -14403,7 +14496,7 @@ a:hover, a:focus-visible {
 }
 
 /* ---------- HERMES FIELD GUIDE / ATLAS EDITORIAL LANGUAGE ----------
-   The Hermes area is intentionally not another AiGENCY bento page. It uses
+   The Hermes area is intentionally not another A2A Design bento page. It uses
    a warm, indexed field-guide treatment so agents and skills read as a real
    catalogue of operational material, rather than a family of product tiles. */
 .hermes-atlas-page {

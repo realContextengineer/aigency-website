@@ -5,7 +5,7 @@ import { CheerioCrawler, Configuration } from "crawlee";
 const MAX_PUBLIC_HTML_PAGES = 6;
 const MAX_REQUESTS = MAX_PUBLIC_HTML_PAGES + 2;
 const REQUEST_TIMEOUT_MS = 8_000;
-const USER_AGENT = "AiGENCY-Article50-Review/0.1 (+https://aigency.ltd/ai-transparency.html)";
+const USER_AGENT = "A2A Design-Article50-Review/0.1 (+https://www.a2adesign.co.uk/ai-transparency.html)";
 
 export class ScanInputError extends Error {}
 export class ScanUnavailableError extends Error {}
@@ -271,7 +271,7 @@ export async function runArticle50Scan(rawUrl, { resolver = dns.lookup } = {}) {
   const checks = buildArticle50Checks({ pages, robotsFound: auxiliary.robots, llmsFound: auxiliary.llms });
   const summary = checks.reduce((totals, item) => ({ ...totals, [item.status]: totals[item.status] + 1 }), { found: 0, not_found: 0, confirm: 0 });
   return {
-    scanner: "AiGENCY Article 50 public-surface review",
+    scanner: "A2A Design Article 50 public-surface review",
     version: "0.1-local-build",
     scanned_at: new Date().toISOString(),
     target: { submitted_url: target.href, hostname: target.hostname },

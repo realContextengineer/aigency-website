@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://aigency.ltd/demos/quote/sitemap.xml
+Sitemap: https://www.a2adesign.co.uk/demos/quote/sitemap.xml

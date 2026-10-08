@@ -3,7 +3,7 @@
   "version": "0.1",
   "status": "static_demo_only",
   "description": "A public documentation card for the GrantFinder design demonstration. It is not a live A2A service and accepts no remote tasks.",
-  "url": "https://aigency.ltd/demos/07-grant-finding-assistant/",
+  "url": "https://www.a2adesign.co.uk/demos/07-grant-finding-assistant/",
   "taskEndpoint": null,
   "authentication": "No authentication because no remote task endpoint exists.",
   "simulatedSkills": ["find_grants", "match_to_profile", "compare_grants", "list_evidence", "prepare_plan", "human_review"],

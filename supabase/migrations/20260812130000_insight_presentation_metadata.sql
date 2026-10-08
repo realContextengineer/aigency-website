@@ -1,4 +1,4 @@
--- Publishing metadata supplied by the active AEO Expert insight skill.
+-- Publishing metadata supplied by Foxy's active Insights Post skill.
 -- The website treats these as presentation/disclosure data, not article body.
 alter table public.insights_posts
   add column if not exists tile_colour text,

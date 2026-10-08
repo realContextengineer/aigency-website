@@ -1,4 +1,4 @@
-/* AIGENCY AI RECEPTIONIST / tightening pass */
+/* A2A DESIGN AI RECEPTIONIST / tightening pass */
 
 body.receptionist-page { position: relative; isolation: isolate; --parallax-back: 0px; --parallax-front: 0px; background: var(--desk-bg); }
 body.receptionist-page:before, body.receptionist-page:after { position: fixed; z-index: -1; inset: -7vh -5vw; content: ''; pointer-events: none; background-position: center; background-repeat: no-repeat; background-size: cover; will-change: transform; }

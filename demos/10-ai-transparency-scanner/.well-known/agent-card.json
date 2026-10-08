@@ -2,8 +2,8 @@
   "name": "ACT 50",
   "description": "An evidence-led AI Transparency Review Agent that inspects public-facing AI interactions, disclosure quality, synthetic-content signals and Article 50 review questions.",
   "provider": {
-    "organization": "AIGENCY Ltd",
-    "url": "https://aigency.ltd"
+    "organization": "A2A Design",
+    "url": "https://www.a2adesign.co.uk"
   },
   "version": "0.2.0-demo",
   "documentationUrl": "http://127.0.0.1:8797/10-ai-transparency-scanner/#agent",

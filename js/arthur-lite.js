@@ -22,15 +22,15 @@
   const contextualIntroductions = {
     'ai-health-check': 'I can help explain this health check while you work through it. I cannot alter your answers or change the website.',
     'ai-transparency': 'I can explain the transparency service and help you find the right next step. I cannot run or alter a scan.',
-    'contact': 'I can help you choose the right route before you contact AiGENCY. I cannot submit or change the form.',
+    'contact': 'I can help you choose the right route before you contact A2A Design. I cannot submit or change the form.',
     'hermes-agents': 'I can help you understand Hermes, its agent patterns, skills and human boundaries. I cannot configure or activate anything.',
     'services': 'I can help you understand the services and find the most relevant starting point.',
     'training': 'I can help you understand the training routes and find the level that fits your work.',
-    'creative-design': 'I can help you explore AiGENCY’s design work and the route from an idea into delivery.',
+    'creative-design': 'I can help you explore A2A Design’s design work and the route from an idea into delivery.',
     'insights': 'I can help you explore the published Field Notes and explain what is available.'
   };
   const introduction = contextualIntroductions[pageSlug]
-    || 'I’m Arthur Light, AiGENCY’s public site guide. I can explain what is here and help you find the right next step.';
+    || 'I’m Arthur Light, A2A Design’s public site guide. I can explain what is here and help you find the right next step.';
 
   const root = document.createElement('div');
   root.className = 'arthur-lite arthur-lite--' + (mode === 'quiet' ? 'quiet' : 'dock');
@@ -60,7 +60,7 @@
     '    <input id="arthur-lite-input" type="text" placeholder="Ask Arthur Light…" maxlength="600" autocomplete="off">',
     '    <button type="submit" aria-label="Send message">↗</button>',
     '  </form>',
-    '  <a class="arthur-lite__human" href="/contact.html?service=AiGENCY%20AI%20conversation">Talk to a person <span aria-hidden="true">↗</span></a>',
+    '  <a class="arthur-lite__human" href="/contact.html?service=A2A Design%20AI%20conversation">Talk to a person <span aria-hidden="true">↗</span></a>',
     '</section>'
   ].join('');
 
